@@ -1,8 +1,10 @@
-# Introduction
+Introduction
+------------
 
 These are the materials for my MSc thesis.
 
-# Download
+Download
+--------
 
 To get the stuff:
 
