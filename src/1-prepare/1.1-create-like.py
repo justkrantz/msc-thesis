@@ -2,8 +2,10 @@
 
 import imod
 import numpy as np
+import os
 import xarray as xr
-
+#%%
+os.chdir("c:/projects/msc-thesis")
 # %%
 
 def round_extent(extent, cellsize):
@@ -45,5 +47,6 @@ like = imod.util.empty_2d(
 like_ds = like.to_dataset(name=("like"))
 
 like_ds.to_netcdf("data/2-interim/like.nc")
+
 
 # %%

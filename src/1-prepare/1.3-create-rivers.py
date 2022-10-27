@@ -1,4 +1,4 @@
-# %%
+# %% 
 
 import os
 
@@ -25,14 +25,22 @@ def moving_average(da, windowsize: int):
 # %%
 # Read input data.
 
-river_dataset = xr.open_dataset("data/1-external/river.nc").dropna("z", how="all")
-like = xr.open_dataarray("data/2-interim/like.nc")
+river_dataset = xr.open_dataset("data/1-external/river.nc")#.dropna("z", how="all")
+like          = xr.open_dataarray("data/2-interim/like.nc")
+inf_ponds     = xr.open_dataset("data/1-external/infiltration_ponds.nc").drop("is_pond_2D")
+# %% process data
 
-# %%
+inf_ponds_mean = inf_ponds.mean("time", skipna=True)
+riv_mean          = river_dataset.mean("time")
+#%%
 
-river_stage = river_dataset["stage"].isel(time=0).max("z")
+river = riv_mean.combine_first(inf_ponds_mean)
+
+#%%
+river_stage = riv_mean["stage"].max("z")
 full_river = imod.prepare.fill(river_stage)
 moving_average_river = moving_average(full_river, 11)
+
 
 # %%
 # We use the moving average to detect the high elevation canals. However, this
