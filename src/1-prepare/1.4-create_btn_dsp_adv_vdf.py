@@ -23,7 +23,7 @@ chloride_saline = chloride_new.notnull() * chloride_new.max()
 
 
 #%%
-btn = imod.wq.BasicTransport(icbund=ibound_coarse, starting_concentration=chloride_fresh)
+btn = imod.wq.BasicTransport(icbund=ibound_coarse, starting_concentration=chloride_saline)
 dsp = imod.wq.Dispersion(longitudinal=0.001)
 adv = imod.wq.AdvectionTVD(courant=1.0)
 vdf = imod.wq.VariableDensityFlow(density_concentration_slope=0.71)
