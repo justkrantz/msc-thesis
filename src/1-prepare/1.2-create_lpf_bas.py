@@ -36,9 +36,8 @@ ibound_coarse = (ibound_coarse
     .assign_coords(dz=kh["dz"]).drop(["dx", "dy"])
     .assign_coords(dx=like["dx"], dy=like["dy"])
 )
-ibound_coarse_ds = ibound_coarse.to_dataset(name="ibound_coarse")
-#ibound_coarse = ibound_coarse.assign_coords(dx=like["dx"],dy=like["dy"])
 
+ibound_coarse_ds = ibound_coarse.to_dataset(name="ibound_coarse")
 ibound_coarse_ds.to_netcdf("data/2-interim/ibound_coarse.nc") 
 #%%
 # Conductivity

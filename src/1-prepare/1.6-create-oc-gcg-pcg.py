@@ -15,8 +15,8 @@ oc= imod.wq.OutputControl(
 pcg = imod.wq.PreconditionedConjugateGradientSolver(
     max_iter=150,  # max number of outer iterations
     inner_iter=30,  # number of inner iterations
-    hclose=0.001,  # head change criterion for convergence
-    rclose=0.1,  # residual convergence criterion
+    hclose=0.0001,  # head change criterion for convergence
+    rclose=10.0,  # residual convergence criterion
     relax=0.98,  # relaxation parameter
     damp=1.0,  # damping factor, equal to 1 means no damping
 )

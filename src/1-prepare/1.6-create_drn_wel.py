@@ -7,14 +7,51 @@ import pandas as pd
 import xarray as xr
 #%%
 os.chdir("c:/projects/msc-thesis")
+# %%
+# Functions
+def moving_average(da, windowsize: int):
+    weights = np.ones((windowsize, windowsize))
+    weights = weights / weights.sum()  # sums to 1
+    out = da.copy()
+    scipy.ndimage.convolve(da.values, weights, out.values)
+    return out
+
 
 # %%
 # Open data
 ibound_coarse = xr.open_dataarray("data/2-interim/ibound_coarse.nc") # opening as data array to store
 ghb           = xr.open_dataset("data/3-input/ghb.nc")
 well          = pd.read_csv("data/1-external/wells.csv") 
+river_dataset = xr.open_dataset("data/1-external/river.nc")
+like          = xr.open_dataarray("data/2-interim/like.nc")
 #%%
-# Drainage elevation of surface runoff
+# Add rivers from river dataset and remove "boezems"
+riv_mean = river_dataset.mean("time")
+
+river_stage = riv_mean["stage"].max("z")
+full_river  = imod.prepare.fill(river_stage)
+moving_average_river = moving_average(full_river, 11)
+
+# We use the moving average to detect the high elevation canals. However, this
+# results in a a false positive near the dunes. This looks like the only false
+# positive, so we force all locations above the line y=462_500 to be kept.
+
+keep = (full_river - moving_average_river) < 1.0
+keep = keep | (keep["y"] > 462_500.0)
+filtered_river_dataset = riv_mean.where(keep)
+
+#%%
+# Prepare regridders
+mean_regridder = imod.prepare.Regridder(method="mean")
+cond_regridder = imod.prepare.Regridder(method="conductance")
+
+river_regridded = xr.Dataset()
+for var in ("stage", "bot", "density"):
+    river_regridded[var] = mean_regridder.regrid(filtered_river_dataset[var], like=like)
+river_regridded["cond"] = cond_regridder.regrid(filtered_river_dataset["cond"], like=like)
+
+#%%
+# Set up DRN: Elevation of surface runoff
 top     = ibound_coarse.coords["ztop"]
 top_layers = top.where(ibound_coarse != 0).min("z")
 
@@ -23,6 +60,11 @@ surface_level = top3d.max("z")
 is_top = top3d == surface_level
 
 drain_elevation = top3d.where(is_top)
+
+# Set up DRN: add river stage and conductance
+drn_el_combined = drain_elevation.combine_first(river_regridded["stage"])
+
+
 #%%
 # Conductance of drain
 
@@ -32,8 +74,11 @@ is_cond_2 = is_cond.where(is_top)
 is_cond_lower = is_top * 250
 is_cond_2_lower = is_cond_lower.where(is_top)
 
-drn = imod.wq.Drainage(drain_elevation, is_cond_2_lower, save_budget=True)
-#%%
+# conductance river drains
+is_cond_combined = is_cond_2_lower.combine_first(river_regridded["cond"])
+
+drn = imod.wq.Drainage(drn_el_combined, is_cond_combined, save_budget=True)
+
 drn.dataset.to_netcdf("data/3-input/drn.nc")
 #%%
 # Wells
