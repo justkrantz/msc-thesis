@@ -49,7 +49,7 @@ kh_coarse = (kh_coarse
     .assign_coords(layer=("z", np.arange(1, 50)))
     .assign_coords(dz=kh["dz"]).drop(["dx", "dy"])
 )
-kv_coarse = mean_regridder.regrid(kv,like)
+kv_coarse = harmonic_regridder.regrid(kv,like)
 
 kv_coarse = (kv_coarse
     .where(ibound_coarse)
@@ -70,12 +70,12 @@ bas = imod.wq.BasicFlow(
     top    = ibound.coords["ztop"][0],
     bottom = ibound.coords["zbot"].zbot,
     starting_head = SH_re,
-    inactive_head = -9999.0,
+    inactive_head = -9999.0
 )
 bas.dataset.to_netcdf("data/3-input/bas.nc")
 #%%
 # Layer Property Flow
-lpf = imod.wq.LayerPropertyFlow(k_horizontal = kh_coarse, k_vertical = kv_coarse)
+lpf = imod.wq.LayerPropertyFlow(k_horizontal = kh_coarse, k_vertical = kv_coarse,save_budget = True)
 lpf.dataset.to_netcdf("data/3-input/lpf.nc")
 
 # %%

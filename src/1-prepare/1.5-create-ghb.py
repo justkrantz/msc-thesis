@@ -9,7 +9,7 @@ os.chdir("c:/projects/msc-thesis")
 # %%
 
 def find_boundary(ibound):
-    deepest_ibound = ibound.sel(z=-1, drop=True)
+    deepest_ibound = ibound.isel(z=-1, drop=True)
     eroded = deepest_ibound.copy(data=scipy.ndimage.binary_erosion(deepest_ibound.values))
     is_boundary = (deepest_ibound == 1) & (eroded == 0)
     return is_boundary
@@ -59,7 +59,8 @@ ghb_out = imod.wq.GeneralHeadBoundary(
     conductance=boundary_ds["cond"],
     concentration=boundary_ds["conc"],
     density=boundary_ds["density"],
+    save_budget= True
 )
-#ghb_out.dataset.to_netcdf("data/3-input/ghb.nc")
+ghb_out.dataset.to_netcdf("data/3-input/ghb.nc")
 
 # %%

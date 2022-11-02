@@ -31,14 +31,14 @@ inf_ponds     = xr.open_dataset("data/1-external/infiltration_ponds.nc").drop("i
 # %% process data
 
 inf_ponds_mean = inf_ponds.mean("time", skipna=True)
-riv_mean          = river_dataset.mean("time")
-#%%
-
+riv_mean = river_dataset.mean("time")
 river = riv_mean.combine_first(inf_ponds_mean)
 
 #%%
-river_stage = riv_mean["stage"].max("z")
-full_river = imod.prepare.fill(river_stage)
+# Remove "boezem" areas from the river stages
+
+river_stage = river["stage"].max("z")
+full_river  = imod.prepare.fill(river_stage)
 moving_average_river = moving_average(full_river, 11)
 
 
@@ -49,14 +49,12 @@ moving_average_river = moving_average(full_river, 11)
 
 keep = (full_river - moving_average_river) < 1.0
 keep = keep | (keep["y"] > 462_500.0)
-filtered_river_dataset = river_dataset.where(keep)
+filtered_river_dataset = river.where(keep)
 
 # %%
 
 mean_regridder = imod.prepare.Regridder(method="mean")
 cond_regridder = imod.prepare.Regridder(method="conductance")
-
-# %%
 
 river_regridded = xr.Dataset()
 for var in ("stage", "bot", "density"):
@@ -64,8 +62,21 @@ for var in ("stage", "bot", "density"):
 river_regridded["cond"] = cond_regridder.regrid(filtered_river_dataset["cond"], like=like)
 
 # %%
+
+river_regridded = river_regridded.assign_coords(layer=("z", np.arange(1, 50)))
+
+#%%
+riv = imod.wq.River(stage               = river_regridded["stage"],
+                    conductance         = river_regridded["cond"],
+                    bottom_elevation    = river_regridded["bot"],
+                    density             = river_regridded["density"],
+                    save_budget         = True 
+)
+
+
+# %%
 # Store regridded result in a file.
 
-river_regridded.to_netcdf("data/3-input/river.nc")
+riv.dataset.to_netcdf("data/3-input/river.nc")
 
 # %%
