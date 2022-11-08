@@ -31,7 +31,6 @@ ibound_coarse = xr.open_dataset("data/2-interim/ibound_coarse.nc")
 # %% 
 # process data
 inf_ponds_mean  = inf_ponds.mean("time", skipna=True)
-#empty3d         = ibound_coarse.where(ibound_coarse, np.nan)
 
 #%%
 # Regridders
@@ -40,10 +39,8 @@ cond_regridder = imod.prepare.Regridder(method="conductance")
 
 
 river_regridded = xr.Dataset()
-river_regridded["stage"] = mean_regridder.regrid(inf_ponds_mean["stage"], like=like)
-river_regridded["cond"] = cond_regridder.regrid(inf_ponds_mean["cond"], like=like)
-river_regridded["bot"] = mean_regridder.regrid(inf_ponds_mean["bot"], like=like)
-river_regridded["density"] = mean_regridder.regrid(inf_ponds_mean["density"], like=like)
+for var in ("stage", "cond", "bot", "density"):
+    river_regridded[var] = mean_regridder.regrid(inf_ponds_mean[var], like=like)
 
 # %%
 # Huite invention: to link z and layers correctly
@@ -51,7 +48,6 @@ river_z = river_regridded["z"]#.values
 ibound_z = ibound_coarse["z"]#.values
 layer = np.flatnonzero(np.isin(ibound_z, river_z)) + 1
 river_regridded = river_regridded.assign_coords(layer=("z", layer))
-
 #%%
 riv = imod.wq.River(stage               = river_regridded["stage"],
                     conductance         = river_regridded["cond"],
@@ -59,7 +55,6 @@ riv = imod.wq.River(stage               = river_regridded["stage"],
                     density             = river_regridded["density"],
                     save_budget         = True 
 )
-
 
 # %%
 # Store regridded result in a file.
