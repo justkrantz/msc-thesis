@@ -35,7 +35,6 @@ ymax_1 = y_old[0]
 
 xmin_1, ymin_1, xmax_1, ymax_1 = round_extent((xmin_1, ymin_1, xmax_1, ymax_1), dx_1)
 
-
 like = imod.util.empty_2d(
     dx_1,
     xmin_1,
@@ -47,6 +46,5 @@ like = imod.util.empty_2d(
 like_ds = like.to_dataset(name=("like"))
 
 like_ds.to_netcdf("data/2-interim/like.nc")
-
 
 # %%

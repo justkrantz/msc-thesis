@@ -18,7 +18,7 @@ ghb = imod.wq.GeneralHeadBoundary.from_file("data/3-input/ghb.nc")
 rch = imod.wq.RechargeHighestActive.from_file("data/3-input/rch.nc")
 wel = imod.wq.Well.from_file("data/3-input/wel.nc")
 drn = imod.wq.Drainage.from_file("data/3-input/drn.nc")
-riv = imod.wq.River.from_file("data/3-input/river.nc")
+#riv = imod.wq.River.from_file("data/3-input/river.nc")
 # %%
 
 oc  = imod.wq.OutputControl.from_file("data/3-input/oc.nc" )
@@ -43,7 +43,7 @@ m_ss["pcg"] = pcg
 m_ss["gcg"] = gcg
 m_ss["wel"] = wel
 m_ss["drn"] = drn
-m_ss["riv"] = riv
+#m_ss["riv"] = riv
 #%%
 m_ss.create_time_discretization(additional_times=["2014-12-31T23:59:59.000000000",
  "2025-01-01T00:00:00.000000000"]
