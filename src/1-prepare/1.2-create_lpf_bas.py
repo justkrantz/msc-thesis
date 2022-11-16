@@ -61,6 +61,7 @@ kv_coarse = (kv_coarse
 # Starting head
 SH_re = mean_regridder.regrid(starting_head, like)
 SH_re = SH_re.where(ibound_coarse)
+SH_re.to_netcdf(r"data/2-interim/starting-head-coarse.nc")
 
 #%%
 # Basic Flow

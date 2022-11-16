@@ -33,8 +33,7 @@ def link_z_layer(ds, ibound):
     lookup2 = {key: value for key, value in zip(z, dz)}
     layer_numbers   = [lookup1[z] for z in ds["z"].values]
     layer_thickness = [lookup2[dz] for dz in ds["z"].values]
-    #ds_dz = ds.assign_coords(dz = ("z", layer_thickness))
-    return ds.assign_coords(layer=("z", layer_numbers))
+    return ds.assign_coords(layer=("z", layer_numbers),dz = ("z", layer_thickness))
 # %%
 # Sea
 cond_regridder = imod.prepare.Regridder(method= "conductance")
@@ -97,20 +96,5 @@ ghb_out = imod.wq.GeneralHeadBoundary(
     save_budget   = True
 )
 ghb_out.dataset.to_netcdf("data/3-input/ghb.nc")
-
-# %%
-start_x2   = 77344.272
-start_y2   = 462731.01 
-start_2    = (start_x2, start_y2)
-
-end_x2 = 91785.39
-end_y2 = 452746.85
-end_2  = (end_x2, end_y2)
-levels_head = [-6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0] 
-
-fig, ax = plt.subplots()
-CS_stage = imod.select.cross_section_line(ds_final["stage"], start=start_2, end=end_2)
-CS_stage_plot = CS_stage.plot(levels=levels_head)
-plt.title("Conc: CS perpendicular to coastline at t = 3650 [d]")
 
 # %%

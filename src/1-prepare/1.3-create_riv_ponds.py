@@ -1,7 +1,6 @@
 # %% 
 
 import os
-
 import imod
 import numpy as np
 import scipy.ndimage
@@ -20,17 +19,14 @@ def moving_average(da, windowsize: int):
     scipy.ndimage.convolve(da.values, weights, out.values)
     return out
 
-
-
 # %%
 # Read input data.
 like          = xr.open_dataarray("data/2-interim/like.nc")
-inf_ponds     = xr.open_dataset("data/1-external/infiltration_ponds.nc").drop("is_pond_2D")
 ibound_coarse = xr.open_dataset("data/2-interim/ibound_coarse.nc")
-
+river         = xr.open_dataset("data/1-external/river.nc")       
 # %% 
 # process data
-inf_ponds_mean  = inf_ponds.mean("time", skipna=True)
+river_mean  = river.mean("time", skipna=True)
 
 #%%
 # Regridders
@@ -40,7 +36,7 @@ cond_regridder = imod.prepare.Regridder(method="conductance")
 
 river_regridded = xr.Dataset()
 for var in ("stage", "cond", "bot", "density"):
-    river_regridded[var] = mean_regridder.regrid(inf_ponds_mean[var], like=like)
+    river_regridded[var] = mean_regridder.regrid(river_mean[var], like=like)
 
 # %%
 # Huite invention: to link z and layers correctly
@@ -48,6 +44,7 @@ river_z = river_regridded["z"]#.values
 ibound_z = ibound_coarse["z"]#.values
 layer = np.flatnonzero(np.isin(ibound_z, river_z)) + 1
 river_regridded = river_regridded.assign_coords(layer=("z", layer))
+river_regridded.to_netcdf("data/2-interim/river.nc")
 #%%
 riv = imod.wq.River(stage               = river_regridded["stage"],
                     conductance         = river_regridded["cond"],
@@ -55,9 +52,3 @@ riv = imod.wq.River(stage               = river_regridded["stage"],
                     density             = river_regridded["density"],
                     save_budget         = True 
 )
-
-# %%
-# Store regridded result in a file.
-
-riv.dataset.to_netcdf("data/3-input/river.nc")
-
