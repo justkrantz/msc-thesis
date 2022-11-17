@@ -1,4 +1,8 @@
 #%%
+""" 
+Create recharge package after regridding.
+"""
+#%%
 import scipy.ndimage
 import imod
 import numpy as np

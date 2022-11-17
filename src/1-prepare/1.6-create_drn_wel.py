@@ -1,4 +1,13 @@
 #%%
+"""
+Create Drainage and Well package
+    Drainage:
+    - Surface runoff defined by top of active cells in ibound, excluding the sea area.
+    Well: 
+    - Only exfiltration wells are used.  
+    - Their average discharge is calculated and applied for all timesteps
+"""
+#%%
 import scipy.ndimage
 import imod
 import numpy as np
@@ -24,6 +33,7 @@ ghb           = xr.open_dataset("data/3-input/ghb.nc")
 well          = pd.read_csv("data/1-external/wells.csv") 
 river_dataset = xr.open_dataset("data/1-external/river.nc")
 like          = xr.open_dataarray("data/2-interim/like.nc")
+sea           = xr.open_dataset(r"data/2-interim/sea_clipped.nc")
 #%%
 # Add rivers from river dataset and remove "boezems"
 riv_mean = river_dataset.mean("time")
@@ -55,14 +65,23 @@ river_regridded["cond"] = cond_regridder.regrid(filtered_river_dataset["cond"], 
 top     = ibound_coarse.coords["ztop"]
 top_layers = top.where(ibound_coarse != 0).min("z")
 
-top3d = top.where(ibound_coarse != 0)
+# exclude sea
+sea_2d  = sea["stage"].isel(z=0, drop = True)
+
+top3d   = top.where(ibound_coarse != 0 )
+top3d_2 = top3d.where(sea_2d.isnull())
+
 surface_level = top3d.max("z")
 is_top = top3d == surface_level
 
-drain_elevation = top3d.where(is_top)
+surface_level_2 = top3d_2.max("z")
+is_top_2 = top3d_2 == surface_level_2
+
+drain_elevation_2 = top3d_2.where(is_top_2)
 
 # Set up DRN: add river stage and conductance
-drn_el_combined = drain_elevation.combine_first(river_regridded["stage"])
+# Without sea
+drn_el_combined_2 = drain_elevation_2.combine_first(river_regridded["stage"])
 
 
 #%%
@@ -76,8 +95,10 @@ is_cond_2_lower = is_cond_lower.where(is_top)
 
 # conductance river drains
 is_cond_combined = is_cond_2_lower.combine_first(river_regridded["cond"])
+is_cond_no_sea   = is_cond_combined.where(sea_2d.isnull())
 
-drn = imod.wq.Drainage(drn_el_combined, is_cond_combined, save_budget=True)
+#%%
+drn = imod.wq.Drainage(drn_el_combined_2, is_cond_no_sea, save_budget=True)
 
 drn.dataset.to_netcdf("data/3-input/drn.nc")
 #%%

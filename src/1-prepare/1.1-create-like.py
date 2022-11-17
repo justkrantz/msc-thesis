@@ -1,5 +1,9 @@
 # %%
+"""
+Create empty LIKE grid of 250m, which is the grid to which all data will be regridded.
 
+"""
+#%%
 import imod
 import numpy as np
 import os

@@ -1,4 +1,12 @@
 #%%
+"""
+Create:
+- Basic Transport
+- Dispersion
+- AdvectionTVD
+- Variable Density Flow
+"""
+#%%
 import numpy as np
 import imod
 import os
@@ -8,9 +16,9 @@ os.chdir("c:/projects/msc-thesis")
 #%%
 # Open data
 ibound_coarse = xr.open_dataarray("data/2-interim/ibound_coarse.nc")
-chloride = xr.open_dataarray("data/1-external/chloride.nc")
-like     = xr.open_dataarray("data/2-interim/like.nc")
-
+chloride  = xr.open_dataarray("data/1-external/chloride.nc")
+like      = xr.open_dataarray("data/2-interim/like.nc")
+inf_ponds = xr.open_dataset(r"data/1-external/infiltration_ponds.nc")
 #%%
 mean_regridder = imod.prepare.Regridder(method="mean")
 

@@ -1,3 +1,17 @@
+"""
+Create the content of the LPF and BAS packages.
+
+Steps in this script:
+
+* Read 25 m data
+* Regrid IBOUND data to 250 m: Only make 250 m cells active if more than half of
+  volume is occupied by 25 m active cells
+* Regrid conductivity parameters...
+* Set up BasicFlow model
+* Set up LayerPropertyFlow model
+
+"""
+
 #%%
 import scipy.ndimage
 import imod

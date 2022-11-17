@@ -1,4 +1,11 @@
 #%%
+"""
+Create General Head Boundary package GHB as a combination of
+- infiltration ponds (from 1.3)
+- river (from 1.3)
+- sea 
+"""
+#%%
 import imod
 import os
 import pandas as pd
@@ -47,6 +54,8 @@ ds["cond"] = cond_regridder.regrid(sea["cond"], like=like)
 ds_clipped = xr.Dataset()
 for var in ("stage", "conc", "density", "cond"):
     ds_clipped[var] = ds[var].where(ibound_coarse)
+
+ds_clipped.to_netcdf(r"data/2-interim/sea_clipped.nc")
 #%%
 # Infiltration ponds
 inf_ponds_mean      = inf_ponds.mean("time", skipna = True)
@@ -57,6 +66,9 @@ inf_ponds_regridded["cond"] = cond_regridder.regrid(inf_ponds_mean["cond"], like
 # Add concentration of infiltration ponds
 inf_ponds_conc = xr.zeros_like(inf_ponds_regridded["stage"]).where(inf_ponds_regridded["stage"].notnull())
 inf_ponds_regridded["conc"] = inf_ponds_conc
+#%%
+# Add dimension: Species (0: AR)
+inf_ponds_regridded["conc"].expand_dims(dim={"species":1})
 #%%
 # Rivers
 rivers["conc"] = xr.full_like(rivers["stage"], 16.048).where(rivers["stage"].notnull())
