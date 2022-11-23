@@ -26,12 +26,20 @@ mean_regridder = imod.prepare.Regridder(method="mean")
 chloride_coarse = mean_regridder.regrid(chloride, like)
 chloride_new    = chloride_coarse.where(ibound_coarse)
 chloride_new    = chloride_new.assign_coords(layer=("z", np.arange(1,50)))
+
 chloride_fresh  = chloride_new.notnull() * chloride_new.min()
 chloride_saline = chloride_new.notnull() * chloride_new.max()
 
+chloride = chloride_saline
+
+species_nd = xr.concat([
+    chloride.assign_coords(species=1), #cl
+    xr.full_like(chloride, 0.0).where(chloride.notnull()).assign_coords(species=2),  # AM
+    xr.full_like(chloride, 0.0).where(chloride.notnull()).assign_coords(species=3)], # polders
+    dim="species")
 
 #%%
-btn = imod.wq.BasicTransport(icbund=ibound_coarse, starting_concentration=chloride_saline)
+btn = imod.wq.BasicTransport(icbund=ibound_coarse, starting_concentration=species_nd)
 dsp = imod.wq.Dispersion(longitudinal=0.001)
 adv = imod.wq.AdvectionTVD(courant=1.0)
 vdf = imod.wq.VariableDensityFlow(density_concentration_slope=0.71)
