@@ -39,7 +39,7 @@ species_nd = xr.concat([
     dim="species")
 
 #%%
-btn = imod.wq.BasicTransport(icbund=ibound_coarse, starting_concentration=species_nd)
+btn = imod.wq.BasicTransport(icbund=ibound_coarse, starting_concentration=species_nd, n_species=3)
 dsp = imod.wq.Dispersion(longitudinal=0.001)
 adv = imod.wq.AdvectionTVD(courant=1.0)
 vdf = imod.wq.VariableDensityFlow(density_concentration_slope=0.71)
