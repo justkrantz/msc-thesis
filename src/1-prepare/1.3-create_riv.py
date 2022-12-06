@@ -82,13 +82,13 @@ species_nd = xr.concat([
 
 river_linked["conc"] = species_nd
 river_linked.to_netcdf("data/2-interim/river.nc")
-#%%
-riv = imod.wq.River(stage               = river_linked["stage"],
-                    conductance         = river_linked["cond"],
-                    bottom_elevation    = river_linked["bot"],
-                    density             = river_linked["density"],
-                    concentration       = river_linked["conc"],
-                    save_budget         = True 
-)
+#%% UNUSED
+#riv = imod.wq.River(stage               = river_linked["stage"],
+#                    conductance         = river_linked["cond"],
+#                    bottom_elevation    = river_linked["bot"],
+#                    density             = river_linked["density"],
+#                    concentration       = river_linked["conc"],
+#                    save_budget         = True 
+#)
 
 # %%

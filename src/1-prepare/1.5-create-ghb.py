@@ -3,6 +3,7 @@
 Create General Head Boundary package GHB as a combination of:
 - infiltration ponds (from 1.3)
 - river (from 1.3)
+- 1.4-find-conductances for polder conductance (NO SUCCES)
 - sea 
 """
 #%%
@@ -24,7 +25,7 @@ inf_ponds     = xr.open_dataset(r"data/1-external/infiltration_ponds.nc").drop("
 shead_coarse  = xr.open_dataarray(r"data/2-interim/starting-head-coarse.nc") 
 rivers        = xr.open_dataset(r"data/2-interim/river.nc")
 sea           = xr.open_dataset(r"data/1-external/sea.nc")
-
+cond_polders  = xr.open_dataarray(r"data/2-interim/cond_250_polders.nc")
 # Robust method for linking z, dz and layer
 def link_z_layer(ds, ibound):
     z = ibound["z"].values
@@ -35,6 +36,7 @@ def link_z_layer(ds, ibound):
     layer_numbers   = [lookup1[z] for z in ds["z"].values]
     layer_thickness = [lookup2[dz] for dz in ds["z"].values]
     return ds.assign_coords(layer=("z", layer_numbers),dz = ("z", layer_thickness))
+
 # %%
 # Sea
 cond_regridder = imod.prepare.Regridder(method= "conductance")
@@ -92,14 +94,38 @@ for var in ("stage", "cond", "conc", "density"):
 ds_comb_3 = xr.Dataset()
 for var in ("stage", "cond", "conc", "density"):
     ds_comb_3[var] = ds_combined[var].combine_first(rivers[var])
+
+# combine first with rivers
+ds_comb_3v2 = xr.Dataset()
+for var in ("stage", "cond", "conc", "density"):
+    ds_comb_3v2[var] = rivers[var].combine_first(ds_combined[var])
+
+# combine with polder conductances from 1.4-find-conductances
+ds_comb_4 = xr.Dataset()
+for var in ("stage", "conc", "density"):
+    ds_comb_4[var] = ds_comb_3[var]
+ds_comb_4["cond"] = ds_comb_3["cond"].combine_first(cond_polders)
+
+ds_comb_4v2 = xr.Dataset()
+for var in ("stage", "conc", "density"):
+    ds_comb_4v2[var] = ds_comb_3v2[var]
+ds_comb_4v2["cond"] = ds_comb_3v2["cond"].combine_first(cond_polders)
+
 # %%
-ds_final = link_z_layer(ds_comb_3, ibound_coarse)
+ds_5 = link_z_layer(ds_comb_4v2, ibound_coarse)
+# Erase the one cell with negative conductivity for now
+ds_positive = ds_5["cond"] > 0
+ds_negative = ds_5["cond"] < 0
+ds_5["cond"] = ds_5["cond"].where(~ds_negative, other=0.0)
+ds_5["cond"] = ds_5["cond"].where(ds_5["density"].notnull())
+
+#ds_final = ds_positive * ds_5
 # %%
 ghb_out = imod.wq.GeneralHeadBoundary(
-    head          = ds_final["stage"],
-    conductance   = ds_final["cond"],
-    concentration = ds_final["conc"],
-    density       = ds_final["density"],
+    head          = ds_5["stage"],
+    conductance   = ds_5["cond"],
+    concentration = ds_5["conc"],
+    density       = ds_5["density"],
     save_budget   = True
 )
 ghb_out.dataset.to_netcdf("data/3-input/ghb.nc")

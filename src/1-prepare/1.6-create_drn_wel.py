@@ -3,9 +3,10 @@
 Create Drainage and Well package
     Drainage:
     - Surface runoff defined by top of active cells in ibound, excluding the sea area.
+    Drainage 2:
+    - the phreatic drainage (horizontal drains) are specified in a second drainage object
     Well: 
-    - Only exfiltration wells are used.  
-    - Their average discharge is calculated and applied for all timesteps
+    - the idf's used for the 25m model are used
 """
 #%%
 import scipy.ndimage
@@ -30,10 +31,14 @@ def moving_average(da, windowsize: int):
 # Open data
 ibound_coarse = xr.open_dataarray("data/2-interim/ibound_coarse.nc") # opening as data array to store
 ghb           = xr.open_dataset("data/3-input/ghb.nc")
-well          = pd.read_csv("data/1-external/wells.csv") 
 river_dataset = xr.open_dataset("data/1-external/river.nc")
 like          = xr.open_dataarray("data/2-interim/like.nc")
 sea           = xr.open_dataset(r"data/2-interim/sea_clipped.nc")
+# Phreatic drainage and wells from output of 25m model
+drn_phr_cond  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l*.idf")
+drn_phr_elev  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l2.idf")
+wells         = imod.ipf.read(r"data\1-external\data-25-run-1\wel\wel_19791231235959_l*.ipf") 
+
 #%%
 # Add rivers from river dataset and remove "boezems"
 riv_mean = river_dataset.mean("time")
@@ -60,6 +65,9 @@ for var in ("stage", "bot", "density"):
     river_regridded[var] = mean_regridder.regrid(filtered_river_dataset[var], like=like)
 river_regridded["cond"] = cond_regridder.regrid(filtered_river_dataset["cond"], like=like)
 
+drn_phr_re = xr.Dataset()
+drn_phr_re["elevation"]   = mean_regridder.regrid(drn_phr_elev, like=like)
+drn_phr_re["conductance"] = cond_regridder.regrid(drn_phr_cond, like=like)
 #%%
 # Set up DRN: Elevation of surface runoff
 top     = ibound_coarse.coords["ztop"]
@@ -99,17 +107,18 @@ is_cond_no_sea   = is_cond_combined.where(sea_2d.isnull())
 
 #%%
 drn = imod.wq.Drainage(drn_el_combined_2, is_cond_no_sea, save_budget=True)
-
 drn.dataset.to_netcdf("data/3-input/drn.nc")
 #%%
+drn_2 = imod.wq.Drainage(drn_phr_re["elevation"], drn_phr_re["conductance"], save_budget = True)
+drn_2.dataset.to_netcdf("data/3-input/drn_2.nc")
+#%%
 # Wells
-wells_2014 = well[well["time"] == "2014-12-31 23:59:59"]
 wel = imod.wq.Well(
-    id_name=wells_2014["idcode"],
-    x=wells_2014["x"],
-    y=wells_2014["y"],
-    rate=wells_2014["rate"].min(),
-    layer=wells_2014["layer"],
+    id_name=wells["id_name"],
+    x=wells["x"],
+    y=wells["y"],
+    rate=wells["rate"],
+    layer=wells["layer"],
     save_budget=True,
 )
 wel.dataset.to_netcdf("data/3-input/wel.nc")
