@@ -36,7 +36,7 @@ like          = xr.open_dataarray("data/2-interim/like.nc")
 sea           = xr.open_dataset(r"data/2-interim/sea_clipped.nc")
 # Phreatic drainage and wells from output of 25m model
 drn_phr_cond  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l*.idf")
-drn_phr_elev  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l2.idf")
+drn_phr_elev  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l*.idf")
 wells         = imod.ipf.read(r"data\1-external\data-25-run-1\wel\wel_19791231235959_l*.ipf") 
 
 #%%
@@ -90,8 +90,7 @@ drain_elevation_2 = top3d_2.where(is_top_2)
 # Set up DRN: add river stage and conductance
 # Without sea
 drn_el_combined_2 = drain_elevation_2.combine_first(river_regridded["stage"])
-
-
+surface_level_2.to_netcdf("data/2-interim/surface_level_without_sea.nc")
 #%%
 # Conductance of drain
 

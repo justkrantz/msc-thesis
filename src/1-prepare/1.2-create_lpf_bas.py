@@ -10,7 +10,9 @@ Steps in this script:
 * Set up BasicFlow model
 * Set up LayerPropertyFlow model
 
-For the starting heads, the heads calculated by the 25m model are used (SS run)
+For the starting heads
+* Heads calculated by the 25m model are used (SS run)
+* Heads from output of previous run can be used
 """
 
 #%%

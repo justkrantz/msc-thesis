@@ -20,8 +20,6 @@ wel = imod.wq.Well.from_file("data/3-input/wel.nc")
 drn = imod.wq.Drainage.from_file("data/3-input/drn.nc")
 drn2= imod.wq.Drainage.from_file("data/3-input/drn_2.nc")
 chd = imod.wq.ConstantHead.from_file("data/3-input/chd.nc")
-#riv = imod.wq.River.from_file("data/3-input/river.nc")
-# %%
 
 oc  = imod.wq.OutputControl.from_file("data/3-input/oc.nc" )
 pcg = imod.wq.PreconditionedConjugateGradientSolver.from_file("data/3-input/pcg.nc")
@@ -50,7 +48,7 @@ m_ss["chd"] = chd
 #m_ss["riv"] = riv
 #%%
 m_ss.create_time_discretization(additional_times=["2014-12-31T23:59:59.000000000",
- "2055-01-01T00:00:00.000000000"]
+ "2054-01-01T00:00:00.000000000"]
 )
 m_ss["time_discretization"].dataset["transient"] = False
 modeldir_ss = pathlib.Path("data/3-input/SS_1")

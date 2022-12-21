@@ -106,3 +106,11 @@ reports/figures
 
 # temporary snakemake files
 .snakemake
+SS_1/bas/ibound_l1.idf
+src/4-analyze/reports/images/cross_sections/conc_cross_section_20y_5.png
+*.idf
+*.ipf
+*.png
+*.nc
+DUNEA_1
+SS_1
