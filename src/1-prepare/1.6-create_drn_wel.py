@@ -34,10 +34,15 @@ ghb           = xr.open_dataset("data/3-input/ghb.nc")
 river_dataset = xr.open_dataset("data/1-external/river.nc")
 like          = xr.open_dataarray("data/2-interim/like.nc")
 sea           = xr.open_dataset(r"data/2-interim/sea_clipped.nc")
-# Phreatic drainage and wells from output of 25m model
-drn_phr_cond  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l*.idf")
-drn_phr_elev  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l*.idf")
+# Second drainage and wells from output of 25m model
+drn_2_cond  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l*.idf")
+drn_2_elev  = imod.idf.open(r"data\1-external\data-25-run-1\drn\elevation_l*.idf")
 wells         = imod.ipf.read(r"data\1-external\data-25-run-1\wel\wel_19791231235959_l*.ipf") 
+
+# Phreatic drainage from the correct package holymoly!
+drn_3_cond  = imod.idf.open(r"data\1-external\data-25-run-1\phreatic-extraction\conductance_l*.idf")
+drn_3_elev  = imod.idf.open(r"data\1-external\data-25-run-1\phreatic-extraction\elevation_l*.idf")
+
 
 #%%
 # Add rivers from river dataset and remove "boezems"
@@ -65,9 +70,14 @@ for var in ("stage", "bot", "density"):
     river_regridded[var] = mean_regridder.regrid(filtered_river_dataset[var], like=like)
 river_regridded["cond"] = cond_regridder.regrid(filtered_river_dataset["cond"], like=like)
 
-drn_phr_re = xr.Dataset()
-drn_phr_re["elevation"]   = mean_regridder.regrid(drn_phr_elev, like=like)
-drn_phr_re["conductance"] = cond_regridder.regrid(drn_phr_cond, like=like)
+drn_2_re = xr.Dataset()
+drn_2_re["elevation"]   = mean_regridder.regrid(drn_2_elev, like=like)
+drn_2_re["conductance"] = cond_regridder.regrid(drn_2_cond, like=like)
+
+drn_3_re = xr.Dataset()
+drn_3_re["elevation"]   = mean_regridder.regrid(drn_3_elev, like=like)
+drn_3_re["conductance"] = cond_regridder.regrid(drn_3_cond, like=like)
+
 #%%
 # Set up DRN: Elevation of surface runoff
 top     = ibound_coarse.coords["ztop"]
@@ -107,9 +117,12 @@ is_cond_no_sea   = is_cond_combined.where(sea_2d.isnull())
 #%%
 drn = imod.wq.Drainage(drn_el_combined_2, is_cond_no_sea, save_budget=True)
 drn.dataset.to_netcdf("data/3-input/drn.nc")
-#%%
-drn_2 = imod.wq.Drainage(drn_phr_re["elevation"], drn_phr_re["conductance"], save_budget = True)
+
+drn_2 = imod.wq.Drainage(drn_2_re["elevation"], drn_2_re["conductance"], save_budget = True)
 drn_2.dataset.to_netcdf("data/3-input/drn_2.nc")
+
+drn_3 = imod.wq.Drainage(drn_3_re["elevation"], drn_3_re["conductance"], save_budget = True)
+drn_3.dataset.to_netcdf("data/3-input/drn_3.nc")
 #%%
 # Wells
 wel = imod.wq.Well(

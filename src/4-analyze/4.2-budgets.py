@@ -28,26 +28,26 @@ inf_ponds    = xr.open_dataset(r"c:\projects\msc-thesis\data\1-external\infiltra
 inf_ponds = inf_ponds.isel(time=0, drop=True)
 
 # Output: budgets from metamodel 
-meta_drn_2054     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgdrn\bdgdrn_205412312359_l*.idf").isel(time=0, drop=True)
+meta_drn_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgdrn\bdgdrn_205312312359_l*.idf").isel(time=0, drop=True)
 meta_drn_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgdrn\bdgdrn_202412312359_l*.idf").isel(time=0, drop=True)
 
-meta_ghb_2054     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgghb\bdgghb_205412312359_l*.idf").isel(time=0, drop=True)
+meta_ghb_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgghb\bdgghb_205312312359_l*.idf").isel(time=0, drop=True)
 meta_ghb_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgghb\bdgghb_202412312359_l*.idf").isel(time=0, drop=True)
 
-meta_rch_2054     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgrch\bdgrch_205412312359_l*.idf").isel(time=0, drop=True)
+meta_rch_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgrch\bdgrch_205312312359_l*.idf").isel(time=0, drop=True)
 meta_rch_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgrch\bdgrch_202412312359_l*.idf").isel(time=0, drop=True)
 
-meta_wel_2054     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgwel\bdgwel_205412312359_l*.idf").isel(time=0, drop=True)
+meta_wel_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgwel\bdgwel_205312312359_l*.idf").isel(time=0, drop=True)
 meta_wel_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgwel\bdgwel_202412312359_l*.idf").isel(time=0, drop=True)
 
-#meta_bnd_2054     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgbnd\bdgbnd_205412312359_l*.idf").isel(time=0, drop=True)
+#meta_bnd_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgbnd\bdgbnd_205312312359_l*.idf").isel(time=0, drop=True)
 #meta_bnd_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgbnd\bdgbnd_202412312359_l*.idf").isel(time=0, drop=True)
 
 OM_drn = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\bdgdrn_ss_t0.zarr")["bdgdrn"]
 OM_riv = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\bdgriv_ss_t0.zarr")["bdgriv"]
 OM_wel = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\bdgwel_ss_t0.zarr")["bdgwel"]
-# %% absolute error
-def abs_er(expected, actual):
+# %% error
+def er(expected, actual):
     re = actual - expected
     return re
 # Relative error
@@ -56,7 +56,9 @@ def rel_er(expected, actual):
     return re
 # %% Process data
 # OM - regrid
-OMdrn_re = sum_regridder.regrid(OM_drn, like)
+OMdrn_re_mean = mean_regridder.regrid(OM_drn, like)
+OMdrn_re_sum  = sum_regridder.regrid(OM_drn, like)
+
 OMriv_re = sum_regridder.regrid(OM_riv, like)
 OMwel_re = sum_regridder.regrid(OM_wel, like)
 
@@ -64,16 +66,14 @@ inf_ponds_re = mean_regridder.regrid(inf_ponds["stage"], like)
 
 
 #%% Analyze - errors
-abs_er_drn_2054 = abs_er(OMdrn_re, meta_drn_2054)
-abs_er_drn_2024 = abs_er(OMdrn_re, meta_drn_2024)
-# top layers
-drn_abs_top = abs_er_drn_2054.isel(layer = np.arange(0,11))
+error_drn_2053_mean = er(OMdrn_re_mean, meta_drn_2053)
+error_drn_2053_sum  = er(OMdrn_re_sum, meta_drn_2053)
 
 # polder area and infiltration ponds
-abs_er_riv_2024 = abs_er(OMriv_re, meta_ghb_2024*(OMriv_re.notnull()==1))
-abs_er_riv_2054 = abs_er(OMriv_re, meta_ghb_2054*(OMriv_re.notnull()==1))
-# absolute error well
-abs_er_wel = abs_er(OMwel_re,meta_wel_2054 )
+error_riv_2024 = er(OMriv_re, meta_ghb_2024*(OMriv_re.notnull()==1))
+error_riv_2053 = er(OMriv_re, meta_ghb_2053*(OMriv_re.notnull()==1))
+# error well
+error_wel = er(OMwel_re,meta_wel_2053 )
 
 #%% Plotting
 levels_conc  = [0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0]
@@ -97,7 +97,7 @@ ends = [
 
 for i, (start, end) in enumerate(zip(starts, ends)):
     fig, ax = plt.subplots()
-    CS = imod.select.cross_section_line(abs_er_riv_2054, start=start, end=end)
+    CS = imod.select.cross_section_line(error_riv_2053, start=start, end=end)
     ax = CS.plot(yincrease = False)
     plt.title(f"Conc: CS {i+1}, meta perpendicular to coastline at t = 40y [d]")
 
