@@ -19,8 +19,8 @@ rch = imod.wq.RechargeHighestActive.from_file("data/3-input/rch.nc")
 wel = imod.wq.Well.from_file("data/3-input/wel.nc")
 drn = imod.wq.Drainage.from_file("data/3-input/drn.nc")
 drn2= imod.wq.Drainage.from_file("data/3-input/drn_2.nc")
+drn3= imod.wq.Drainage.from_file("data/3-input/drn_3.nc")
 chd = imod.wq.ConstantHead.from_file("data/3-input/chd.nc")
-
 oc  = imod.wq.OutputControl.from_file("data/3-input/oc.nc" )
 pcg = imod.wq.PreconditionedConjugateGradientSolver.from_file("data/3-input/pcg.nc")
 gcg = imod.wq.GeneralizedConjugateGradientSolver.from_file("data/3-input/gcg.nc")
@@ -42,8 +42,9 @@ m_ss["oc" ] = oc
 m_ss["pcg"] = pcg
 m_ss["gcg"] = gcg
 m_ss["wel"] = wel
-m_ss["drn"] = drn
+m_ss["drn"]  = drn
 m_ss["drn2"] = drn2
+m_ss["drn3"] = drn3
 m_ss["chd"] = chd
 #m_ss["riv"] = riv
 #%%

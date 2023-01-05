@@ -42,6 +42,8 @@ def er(expected, actual):
 error_meta24_OM = er(heads_SS_OM_re, heads_2024_meta_notime)
 error_meta53_OM = er(heads_SS_OM_re, heads_2053_meta_notime)
 
+heads_error_global_mean = error_meta53_OM.mean().compute()
+
 #%% Clip data to area of Interest 
 raster             = imod.prepare.rasterize(gdf, like) 
 heads_2024_meta_clipped = heads_2024_meta.isel(time=0, drop=True).where(raster==1)
@@ -50,6 +52,8 @@ heads_SS_OM_clipped = heads_SS_OM_re.where(raster==1)
 
 # error in study area (SA):
 error_SA = er(heads_SS_OM_clipped, heads_2053_meta_clipped)
+heads_error_SA_mean = error_SA.mean().compute()
+
 #%% Plotting: 
 levels_err  = np.arange(0,21)/2-5
 levels_head = [-6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0] 
@@ -70,7 +74,7 @@ ends = [
 ]
 
 # metamodel heads cross sections
-plt.figure(figsize=(12,12))
+plt.figure(figsize=(12,14))
 plt.subplots_adjust(hspace=0.5)
 plt.suptitle("hydraulic heads cross sections of metmamodel, perpendicular to coastline")
 for i, (start, end) in enumerate(zip(starts, ends)):
@@ -82,7 +86,7 @@ path = pathlib.Path(f"reports/images/CS_heads_meta.png")
 plt.savefig(path, dpi=300)
 
 # original model heads cross sections
-plt.figure(figsize=(12,12))
+plt.figure(figsize=(12,14))
 plt.subplots_adjust(hspace=0.5)
 plt.suptitle("hydraulic heads cross sections of original model, perpendicular to coastline")
 for i, (start, end) in enumerate(zip(starts, ends)):

@@ -34,10 +34,11 @@ ghb           = xr.open_dataset("data/3-input/ghb.nc")
 river_dataset = xr.open_dataset("data/1-external/river.nc")
 like          = xr.open_dataarray("data/2-interim/like.nc")
 sea           = xr.open_dataset(r"data/2-interim/sea_clipped.nc")
+
 # Second drainage and wells from output of 25m model
 drn_2_cond  = imod.idf.open(r"data\1-external\data-25-run-1\drn\conductance_l*.idf")
 drn_2_elev  = imod.idf.open(r"data\1-external\data-25-run-1\drn\elevation_l*.idf")
-wells         = imod.ipf.read(r"data\1-external\data-25-run-1\wel\wel_19791231235959_l*.ipf") 
+wells       = imod.ipf.read(r"data\1-external\data-25-run-1\wel\wel_19791231235959_l*.ipf") 
 
 # Phreatic drainage from the correct package holymoly!
 drn_3_cond  = imod.idf.open(r"data\1-external\data-25-run-1\phreatic-extraction\conductance_l*.idf")
@@ -110,7 +111,7 @@ is_cond_2 = is_cond.where(is_top)
 is_cond_lower = is_top * 250
 is_cond_2_lower = is_cond_lower.where(is_top)
 
-# conductance river drains
+# Conductance river drains
 is_cond_combined = is_cond_2_lower.combine_first(river_regridded["cond"])
 is_cond_no_sea   = is_cond_combined.where(sea_2d.isnull())
 

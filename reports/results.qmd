@@ -1,0 +1,92 @@
+
+---
+title: "Results documentation"
+author: "Justus Krantz"
+
+---
+
+[NOTE: prior to running this script, make sure the scripts 4.1, 4.2, 4.3 have been run, to ensure this script refers to the latest results of the metamodel]
+
+# Model setup
+- starting concentrations: a column of saline groundwater at the sea, the rest is fresh
+- runtime: 39y of simulation
+
+
+# Review of first results
+Before using the metamodel to test the state-of-the-art knowledge of the fresh/saline groundwater interface, its accuracy with the original model (OM) needs to be reviewed. The metamodel’s output’s accuracy can be expressed by examining three major outputs for which the OM is currently used:
+
+1. Hydraulic heads
+2. Budgets
+3. Groundwater salinity
+
+To review the metamodel’s output with the OM, the results of the OM (25m scale) are regridded to the (larger) cell size of 250m using a corresponding regridding technique. These regridded results can then be compared to the metamodel’s output, by:
+
+- Plotting cross sections for heads and salinity to investigate their distributions 
+- Looking at errors of output of metamodel vs original model
+
+Given that the model’s domain is larger than the study area, the metamodel’s accuracy inside the study domain has the highest priority. Therefore, accuracy of the metamodel can be expressed more specifically for the study domain for all three major outputs. 
+
+### Last changes
+The last run has three drainage packages:
+
+	 1) Surface runoff - top of highest cells active as drainage elevation
+	 2) Drainage from the 25m model - rivers ?
+	 3) Phreatic pipe drainage
+
+## 1. Hydraulic heads
+### Cross sections of distribution
+![Original model cross sections](images/CS_heads_OM.png)
+![Metamodel cross sections](images/CS_heads_meta.png)
+
+### Errors 
+- Entire domain:   0.052m 
+- Study area:      0.090m 
+
+## Observations
+- The model has a higher accuracy in the study area than average over the entire domain. It's average error in the study area is about 10cm. 
+- Looking at the cross sections, the main features of the hydraulic head gradient in the OM seem to be represented by the metamodel's output
+
+## 2. Budgets
+### Plots
+![Budget errors](images/budget_errors.png)
+
+### Errors 
+- budget river error =  5.04m
+- budget drain error = -5.80m
+- budget wel error   = -1.58e-10 m
+
+### Observations
+- The budgets of the river and drain boundary conditions as calculated by the metamodel have errors in the magnitude of 5m. The cell volumes are 250*250*dz
+- Need for relative errors? 
+- Plots: The shape of the coastline can be seen in the plots for drn and riv errors
+
+## 3. Groundwater salinity
+
+### Cross sections [Cl]
+![Metamodel cross sections](images/CS_salinity_meta.png)
+![Original model cross sections](images/CS_salinity_OM.png)
+
+### Depth of fresh-saline interface
+![Depth of fresh-saline interface](images/depth_freshwater.png)
+
+### Errors
+Deph of fresh saline interface:
+
+- Entire domain:  1.38 m 
+- Study area:    -8.95 m
+
+Groundwater salinity [Cl]:
+
+- Entire domain:  -0.11  [g/l]
+- Study area:     -0.06  [g/l]
+
+### Observations
+- Cross sections: The main features are represented by the output of the metamodel. The intrusion of salt water is represented in the metamodel, the shape of the freshwater is also reproduced by the metamodel.
+- Depth interface plots: near the coastline in the study area, it can be seen that the depth of the fresh-saline interface is deeper in the metamodel than in the OM
+- Errors: the metamodel results inside the study are more accurate than in the entire model domain.
+
+
+# Interpretation
+- The heads calculated by the metamodel inside the study area are about 10cm higher than the OM, as a result, more freshwater infiltrates near the coastline, leading to a 9m deeper fresh-saline interface in this area. 
+- The groundwater flows as represented by the budget show there is less drainage than the OM near the coastline, meaning a larger infiltration and a larger freshwater body. 
+- 

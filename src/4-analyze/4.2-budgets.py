@@ -66,16 +66,28 @@ inf_ponds_re = mean_regridder.regrid(inf_ponds["stage"], like)
 
 
 #%% Analyze - errors
-error_drn_2053_mean = er(OMdrn_re_mean, meta_drn_2053)
 error_drn_2053_sum  = er(OMdrn_re_sum, meta_drn_2053)
+bdgdrn_error = error_drn_2053_sum.mean().compute()
 
 # polder area and infiltration ponds
-error_riv_2024 = er(OMriv_re, meta_ghb_2024*(OMriv_re.notnull()==1))
 error_riv_2053 = er(OMriv_re, meta_ghb_2053*(OMriv_re.notnull()==1))
+bdgriv_error = error_riv_2053.mean().compute()
 # error well
 error_wel = er(OMwel_re,meta_wel_2053 )
+bdgwel_error = error_riv_2053.mean().compute()
 
 #%% Plotting
+(fig, axs) = plt.subplots(3,1, figsize=(10,15))
+error_drn_2053_sum.mean("layer").plot.imshow(ax=axs[0]) 
+axs[0].set_title("Error drn")
+error_riv_2053.mean("layer").plot.imshow(ax=axs[1])
+axs[1].set_title("Error riv")
+error_wel.mean("layer").plot.imshow(ax=axs[2])
+axs[2].set_title("Error wel")
+path_3 = pathlib.Path(f"reports/images/budget_errors.png")
+plt.savefig(path_3, dpi=300)
+
+#%% Plotting - cross sections
 levels_conc  = [0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0]
 levels_depth = -1 * np.arange(0,130)
 levels_conc_err = np.arange(0,20)/2-5
