@@ -1,7 +1,7 @@
 """
-Here the mean error can be calculated for total area and area of interest
-We can calculate the total volume of fresh water over time, 
-or the depth of fresh water over time.
+IN this script the depth of the fresh-saline interface will be plotted, 
+    and its error when comparing to the original model's output is calculated and plotted
+Cross sections of the groundwater salinity are also plotted and compared (meta and OM)
 
 """
 

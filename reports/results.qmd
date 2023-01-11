@@ -2,7 +2,11 @@
 ---
 title: "Results documentation"
 author: "Justus Krantz"
-
+format: 
+    pdf:
+        toc: true
+        number-sections: true
+        colorlinks: true
 ---
 
 [NOTE: prior to running this script, make sure the scripts 4.1, 4.2, 4.3 have been run, to ensure this script refers to the latest results of the metamodel]

@@ -18,9 +18,10 @@ import pathlib
 # Import input data
 starting_head_regridded = imod.idf.open(r"c:\projects\msc-thesis\data\3-input\SS_1\bas\starting_head_l*.idf") # NOTE That these are not used as input. instead, the SS heads by 25m model are now used as input
 starting_conc_regridded = imod.idf.open(r"c:\projects\msc-thesis\data\3-input\SS_1\btn\starting_concentration_l*.idf")
-# Import output data 25m model
-conc_25m = xr.open_zarr(r"data\1-external\data-25-run-1\conc-selection.zarr")
-
+# Import data 25m model
+conc_25m    = xr.open_zarr(r"data\1-external\data-25-run-1\conc-selection.zarr")
+heads_ss_25 = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\head_ss_t0.zarr").drop("time")
+starting_conc  = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\conc-selection.zarr").isel(time=0, drop=True)
 # Output data: Heads
 heads_2024   = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\head\head_202412312359_l*.idf")
 
@@ -32,6 +33,9 @@ c3_2024 = imod.idf.open(r"data\4-output\conc\conc_c3_202412312359_l*.idf") # Pol
 c1_2054 = imod.idf.open(r"data\4-output\conc\conc_c1_205412312359_l*.IDF") # Cl
 c2_2054 = imod.idf.open(r"data\4-output\conc\conc_c2_205412312359_l*.IDF") # AM
 c3_2054 = imod.idf.open(r"data\4-output\conc\conc_c3_205412312359_l*.IDF") # Polders
+
+# import regridder
+mean_regridder = imod.prepare.Regridder(method="mean")
 
 # Process for plotting:
 Cl_2024 = c1_2024.where(c1_2024<17)
@@ -72,9 +76,9 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     CS = imod.select.cross_section_line(heads_2024, start=start, end=end)
     ax = CS.plot(levels=levels_head, yincrease = False)
     plt.title(f"Head: CS {i+1} perpendicular to coastline at t = 3650 [d]")
-    path = pathlib.Path(f"reports/images/cross_sections/head_cross_section_10y_{i+1}.png")
-    path.parent.mkdir(exist_ok=True, parents=True)
-    fig.savefig(path, dpi=300)
+    #path = pathlib.Path(f"reports/images/cross_sections/head_cross_section_10y_{i+1}.png")
+    #path.parent.mkdir(exist_ok=True, parents=True)
+    #fig.savefig(path, dpi=300)
 
 # Heads (t = 0)
 for i, (start, end) in enumerate(zip(starts, ends)):
@@ -82,9 +86,9 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     CS = imod.select.cross_section_line(starting_head_regridded, start=start, end=end)
     ax = CS.plot(levels=levels_head, yincrease = False)
     plt.title(f"Head: CS {i+1} perpendicular to coastline at t = 0 [d]")
-    path = pathlib.Path(f"reports/images/cross_sections/head_cross_section_t0_{i+1}.png")
-    path.parent.mkdir(exist_ok=True, parents=True)
-    fig.savefig(path, dpi=300)
+    #path = pathlib.Path(f"reports/images/cross_sections/head_cross_section_t0_{i+1}.png")
+    #path.parent.mkdir(exist_ok=True, parents=True)
+    #fig.savefig(path, dpi=300)
 #%%
 """
 Concentrations from 250m model
