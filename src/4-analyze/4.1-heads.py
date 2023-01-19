@@ -1,8 +1,8 @@
 #%%
 """
 Analyze the heads of metamodel, compare with 25m heads:
-- relative error
-- study area relative error
+- absolute error
+- attempt at 
 
 """
 #%%
@@ -38,7 +38,6 @@ def er(expected, actual):
     re = actual - expected
     return re
 
-#%% error
 error_meta24_OM = er(heads_SS_OM_re, heads_2024_meta_notime)
 error_meta53_OM = er(heads_SS_OM_re, heads_2053_meta_notime)
 
@@ -97,5 +96,21 @@ for i, (start, end) in enumerate(zip(starts, ends)):
 path = pathlib.Path(f"reports/images/CS_heads_OM.png")
 plt.savefig(path, dpi=300)
 
+#%%
+# Combine the cross sections in one plot
+plt.figure(figsize=(12,14))
+plt.subplots_adjust(hspace=0.5)
+plt.suptitle("hydraulic heads cross sections of metmamodel, perpendicular to coastline")
+for i, (start, end) in enumerate(zip(starts, ends)):
+    for j, (start, end) in enumerate(zip(starts, ends)):
+        ax  = plt.subplot(5,2, i+1) # for first plot OM
+        ax1 = plt.subplot(5,2, i+3) # for other plots OM
+        ax2 = plt.subplot(5,2,j+1) 
+        CS = imod.select.cross_section_line(heads_2053_meta, start=start, end=end)
+        CS.plot(ax=ax, levels=levels_head, yincrease = False)
+        plt.title(f"CS{i+1}, 2053 heads meta")
+        CS2 = imod.select.cross_section_line(heads_SS_OM, start=start, end=end)
+        CS2.plot(ax=ax2, levels=levels_head, yincrease = False)
+        plt.title(f"CS{j+1}, 2053 heads OM")
 
 # %%

@@ -53,7 +53,7 @@ depth_fresh_OM2  = conc_OM["z"].where(conc_OM_39y < fresh_upper).min("layer")
 depth_fresh_OM_H = depth_fresh_OM2.combine_first(surface_level) 
 
 # Depth fresh-saline interface meta
-depth_fresh_meta2  = conc_OM["z"].where(conc_meta_39y < fresh_upper).min("layer")
+depth_fresh_meta2  = conc_OM["z"].where(conc_meta_39y < fresh_upper).min("layer") # is this correct?
 depth_fresh_meta_H = depth_fresh_meta2.combine_first(surface_level) 
 #%%
 # Errors

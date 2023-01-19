@@ -4,6 +4,8 @@ Create General Head Boundary package GHB as a combination of:
 - infiltration ponds (from 1.3)
 - river (from 1.3)
 - 1.4-find-conductances for polder conductance and infiltration ponds
+    - as stated in the intro of 1.3, the conductance as calculated by the budgets has inconsistend NaN with other dataarrays in inf_ponds dataset. 
+    - This inconsistency is resolved by a .where() command
 - sea 
 """
 #%%
@@ -58,7 +60,7 @@ for var in ("stage", "conc", "density", "cond"):
 inf_ponds_mean      = inf_ponds.mean("time", skipna = True)
 inf_ponds_regridded = xr.Dataset()
 for var in ("stage" , "bot", "density"):
-    inf_ponds_regridded[var] = mean_regridder.regrid(inf_ponds_mean[var], like=like)
+    inf_ponds_regridded[var] = mean_regridder.regrid(inf_ponds_mean[var], like=like).where(cond_ponds.notnull())
 inf_ponds_regridded["cond"] = cond_ponds
 #%%
 # Add concentration[species] dimension to 
@@ -121,7 +123,7 @@ ghb_out = imod.wq.GeneralHeadBoundary(
 )
 ghb_out.dataset.to_netcdf("data/3-input/ghb.nc")
 
-# %% The following results in: conductance in <imod.wq.ghb.GeneralHeadBoundary object at 0x0000026AA1491A20> must be positive
+# %% INCORRECT? The following results in: conductance in <imod.wq.ghb.GeneralHeadBoundary object at 0x0000026AA1491A20> must be positive
 ds4 = link_z_layer(ds_comb_4v2, ibound_coarse)
 ghb_out = imod.wq.GeneralHeadBoundary(
     head          = ds4["stage"],
