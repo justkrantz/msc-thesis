@@ -71,7 +71,7 @@ ends = [
     (95223.9, 455793.2),
     (96393.9, 460431.4),
 ]
-
+#%%
 # metamodel heads cross sections
 plt.figure(figsize=(12,14))
 plt.subplots_adjust(hspace=0.5)
@@ -95,22 +95,42 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     plt.title(f"CS{i+1}, 2053 heads")
 path = pathlib.Path(f"reports/images/CS_heads_OM.png")
 plt.savefig(path, dpi=300)
-
-#%%
-# Combine the cross sections in one plot
-plt.figure(figsize=(12,14))
-plt.subplots_adjust(hspace=0.5)
-plt.suptitle("hydraulic heads cross sections of metmamodel, perpendicular to coastline")
+# %% Creating Cross sections next to eachother
+plt.figure(figsize=(14,26))
+plt.subplots_adjust(hspace=0.6)
+plt.suptitle("hydraulic heads")
 for i, (start, end) in enumerate(zip(starts, ends)):
-    for j, (start, end) in enumerate(zip(starts, ends)):
-        ax  = plt.subplot(5,2, i+1) # for first plot OM
-        ax1 = plt.subplot(5,2, i+3) # for other plots OM
-        ax2 = plt.subplot(5,2,j+1) 
-        CS = imod.select.cross_section_line(heads_2053_meta, start=start, end=end)
-        CS.plot(ax=ax, levels=levels_head, yincrease = False)
-        plt.title(f"CS{i+1}, 2053 heads meta")
-        CS2 = imod.select.cross_section_line(heads_SS_OM, start=start, end=end)
-        CS2.plot(ax=ax2, levels=levels_head, yincrease = False)
-        plt.title(f"CS{j+1}, 2053 heads OM")
+    ax_OM = plt.subplot(10,2, (i+1)*2, sharex=ax_OM)  # Set the position of the subplot 
+    CS_OM = imod.select.cross_section_line(heads_SS_OM, start=start, end=end)
+    CS_OM.plot(ax=ax_OM,y="z",  levels = levels_head)
+    plt.title(f"CS{i+1} OM")
+ #   plt.colorbar(ax=ax, label="conc")    
 
+# one column set using indexing, rest manual:
+ax1 = plt.subplot(10,2,1, sharex=ax_OM) # position 1 (top left)
+CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[0], end=ends[0])
+CS2.plot(ax=ax1,y="z",  levels = levels_head)
+plt.title(f"CS1 Metamodel")
+
+ax3 = plt.subplot(10,2,3, sharex=ax_OM) # position 3 (left)
+CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[1], end=ends[1])
+CS2.plot(ax=ax3,y="z",  levels = levels_head)
+plt.title(f"CS2 Metamodel")
+
+ax5 = plt.subplot(10,2,5, sharex=ax_OM) # position 5 (left)
+CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[2], end=ends[2])
+CS2.plot(ax=ax5,y="z",  levels = levels_head)
+plt.title(f"CS3 Metamodel")
+
+ax7 = plt.subplot(10,2,7, sharex=ax_OM) # position 7 (left)
+CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[3], end=ends[3])
+CS2.plot(ax=ax7,y="z",  levels = levels_head)
+plt.title(f"CS4 Metamodel")
+
+ax9 = plt.subplot(10,2,9, sharex=ax_OM) # position 9 (left)
+CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[4], end=ends[4])
+CS2.plot(ax=ax9,y="z",  levels = levels_head)
+plt.title(f"CS5 Metamodel")
+path_4 = pathlib.Path(f"reports/images/CS_heads_combined.png")
+plt.savefig(path_4, dpi=200)
 # %%

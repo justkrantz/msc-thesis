@@ -1,7 +1,7 @@
 """
 - In this script the cross secitonal plots of (Stuyfzand, 1993) will be plotted.
 - This is only for the metamodel, as the OM doesn't have species dimension
-- This version attempts to incorporate groundwater salinity. The goal is to highlight the domains:
+- This version shows groundwater salinity, its goal is to highlight the domains:
     - Saline groundwater
     - Fresh groundwater
     - Brackish groundwater
@@ -19,6 +19,7 @@ import os
 import geopandas
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
+import pathlib
 # %%
 os.chdir("c:/projects/msc-thesis")
 # %% Data
@@ -55,7 +56,7 @@ combined_da.isel(layer=10).plot.imshow(ax=ax2,cmap='RdYlBu')
 ax2.set_title("top view, -11mNAP")
 CS_par.plot(ax=ax3,y="z", cmap = "RdYlBu")
 ax3.set_title("Cross section along coastline: [Loosduinen - Katwijk]")
-# %% Transparency using AM, fresh and saline
+# %% Transparency using AM, fresh and saline. CS par = parallel to coastline
 # fresh saline levels
 fresh_upper = 0.150   # g/l
 brack_upper = 8.0000  # g/l 
@@ -74,12 +75,9 @@ CS_par_s = CS_par_s.where(CS_par_s!=0) # setting NaN to avoid overwriting plots
 CS_AM = imod.select.cross_section_line(AM_notnull.where(AM_notnull!=0),  start=start_loosduinen, end=end_katwijk)
 # values should be 
 colors = ["Green", "darkorange", "Blue", "Gold" ]    # needed to make a colormap
-levels = [1,     2,            3,      4,      5]    # needed to make a colormap
+levels = [1,    2,            3,      4,       5]    # needed to make a colormap
 
 fig, ax = plt.subplots(figsize=(10,8))
-# AM
-CS_AM_mod = CS_AM.where(CS_AM>0.01).where(CS_AM!=0).notnull()                                                         # 1 or 0
-plot_4 = CS_AM_mod.where(CS_AM_mod!=0).plot(ax=ax, y="z", colors=colors, levels=levels, add_colorbar=False)
 # saline
 CS_par_s_2 = 2*CS_par_s.where(CS_par_s["z"]<1.0).where(CS_par_s["s"]>1680) #to avoid NaN as "Saline"                  # 2 or 0
 plot_3 = CS_par_s_2.plot(ax=ax, y="z", colors=colors, levels=levels, add_colorbar=False)
@@ -89,7 +87,9 @@ plot_1 = CS_par_f_3.plot(ax=ax, y="z", colors=colors, levels=levels, add_colorba
 # Brackish
 CS_par_b_4 = 4*CS_par_b
 plot_2 = CS_par_b_4.plot(ax=ax, y="z", colors=colors, levels=levels, add_colorbar=False)                              # 4 or 0
-
+# AM
+CS_AM_mod = CS_AM.where(CS_AM>0.01).where(CS_AM!=0).notnull()                                                         # 1 or 0
+plot_4 = CS_AM_mod.where(CS_AM_mod!=0).plot(ax=ax, y="z", colors=colors, levels=levels, add_colorbar=False)
 
 # since quadmesh is not supported, proxy is required (https://matplotlib.org/2.0.2/users/legend_guide.html#proxy-legend-handles)
 grn_patch     = mpatches.Patch(color='green' ,     label='Artificial Infiltration')
@@ -103,42 +103,7 @@ plt.ylim(-150,11)
 plt.text(2800,12,"Loosduinen")
 plt.text(18000,12, "Katwijk")
 plt.title("Species after 40y simulation, cross section along coastline")
-#%% NOTEPAD
-# Alternatively, combine all three in one dataset 
-# Fresh
-ds_f1 = c1_meta.where(c1_meta<fresh_upper)
-ds_f2 = ds_f1.notnull().where(ds_f1!=0)
-# Saline
-ds_s1 = c1_meta.where(c1_meta>brack_upper)
-ds_s2 = ds_s1.notnull().where(ds_s1!=0)
-# AM
-ds_AM = AM_notnull.where(AM_notnull!=0) # make AM_notnull different
-
-# combine
-ds_combi1 = ds_f2.combine_first(2*ds_s2)
-ds_combi2 = 3*ds_AM.combine_first(ds_combi1)
-
-#create cross section:
-CS_ult = imod.select.cross_section_line(ds_combi2,  start=start_loosduinen, end=end_katwijk)
-#colors
-levels = [0,1,2,3]
-CS_ult.plot(y="z",levels=levels ,colors=["orange", "blue", "green"])
-plt.title("poging 2 tot species plot!")
-plt.legend(["zout", "zoet", "infiltration ponds"])
- #%%
-# Huite's answer to overlapping plots for more than two species?
-LEVELS = [0.150, 1.0]  # 150 mg/L, 1000 mg/L
-SALT = tuple(np.array((249, 100, 29)) / 255) # colorcode
-
-
-fig, ax = plt.subplots()
-c2_meta.where(c2_meta != 1.0e30).where(c2_meta > 0.1).isel(y=20).plot(ax=ax, y="z", colors=[SALT], levels=[0.1])
-c3_meta.where(c3_meta != 1.0e30).where(c3_meta > 0.1).isel(y=20).plot(ax=ax, y="z")
+path2 = pathlib.Path(f"reports/images/CS_long_species.png")
+plt.savefig(path2, dpi=200)
 
 # %%
-# Here we can use the various colors from Stuyfzand.
-c2_meta.where(c2_meta != 1.0e30).where(c2_meta > 0.1).isel(y=20).plot(ax=ax, y="z", colors=[SALT], levels=[0.1])
-
-
-
-#    ax.plot(th, np.sin(th), 'C2', label='C2')

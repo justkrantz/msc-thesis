@@ -5,8 +5,7 @@ In this script the depth of the fresh-saline interface will be plotted over time
 -  The scenarios include: 
     1. Starting conc as in OM, for callibration purpose
     2. Starting conc fully saline
-    3. Starting conc in SA as fully saline (to mimic Stuyfzand)
-  
+    3. Starting conc in SA as fully saline (to mimic Stuyfzand)  
 """
 #%%
 import numpy as np
@@ -46,15 +45,17 @@ conc_OM_1999   = mean_regridder.regrid(conc_OM.isel(time=2), like).where(raster=
 conc_OM_2009   = mean_regridder.regrid(conc_OM.isel(time=3), like).where(raster==1)
 conc_OM_2018   = mean_regridder.regrid(conc_OM.isel(time=4), like).where(raster==1)
 
-conc_OM_re = [conc_OM_1979,conc_OM_1989,conc_OM_1999,conc_OM_2009, conc_OM_2018]
+conc_OM_re = [
+    #conc_OM_1979,
+    conc_OM_1989,conc_OM_1999,conc_OM_2009, conc_OM_2018]
 
 depth_OM_ds = xr.Dataset()
-fig,ax = plt.subplots()
-for i in range(0,4):
+
+for i in range(1,4):
+    #depth_OM_ds[0] = 0
     depth_OM_ds[i] = conc_meta["z"].where(conc_OM_re[i] < fresh_upper).where(raster==1).min("layer").mean().compute()
 
 depth_OM_da = depth_OM_ds.to_array()    
-
 #%%
 
 # Meta
@@ -76,11 +77,11 @@ fresh_upper = 0.150   # g/l
 brack_upper = 8.0000  # g/l
 
 # Depth fresh-saline interface
-depth_fresh_meta2  = conc_meta["z"].where(conc_meta_39y < fresh_upper).min("layer")   # is this correct?
-depth_fresh_meta_H = depth_fresh_meta2.combine_first(surface_level) 
+#depth_fresh_meta2  = conc_meta["z"].where(conc_meta_39y < fresh_upper).min("layer")   # is this correct?
+#depth_fresh_meta_H = depth_fresh_meta2.combine_first(surface_level) 
 
-depth_fresh_meta2  = conc_meta["z"].where(conc_meta_39y < fresh_upper).min("layer")   # is this correct?
-depth_fresh_meta_H = depth_fresh_meta2.combine_first(surface_level) 
+#depth_fresh_meta2  = conc_meta["z"].where(conc_meta_39y < fresh_upper).min("layer")   # is this correct?
+#depth_fresh_meta_H = depth_fresh_meta2.combine_first(surface_level) 
 
 
 

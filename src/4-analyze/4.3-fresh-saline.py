@@ -97,7 +97,45 @@ ends = [
     (95223.9, 455793.2),
     (96393.9, 460431.4),
 ]
+# %% Creating Cross sections next to eachother
+plt.figure(figsize=(14,26))
+plt.subplots_adjust(hspace=0.5)
+plt.suptitle("Groundwater salinity [Cl-]")
+for i, (start, end) in enumerate(zip(starts, ends)):
+    ax_OM = plt.subplot(10,2, (i+1)*2, sharex=ax_OM)  # Set the position of the subplot 
+    CS_OM = imod.select.cross_section_line(conc_OM_39y, start=start, end=end)
+    CS_OM.plot(ax=ax_OM,y="z", cmap = "turbo", levels = levels_conc)
+    plt.title(f"CS{i+1} OM")
+ #   plt.colorbar(ax=ax, label="conc")    
 
+# one column set using indexing, rest manual:
+ax1 = plt.subplot(10,2,1, sharex=ax_OM) # position 1 (top left)
+CS2 = imod.select.cross_section_line(conc_meta_39y, start=starts[0], end=ends[0])
+CS2.plot(ax=ax1,y="z", cmap = "turbo", levels = levels_conc)
+plt.title(f"CS1 Metamodel")
+
+ax3 = plt.subplot(10,2,3, sharex=ax_OM) # position 3 (left)
+CS2 = imod.select.cross_section_line(conc_meta_39y, start=starts[1], end=ends[1])
+CS2.plot(ax=ax3,y="z", cmap = "turbo", levels = levels_conc)
+plt.title(f"CS2 Metamodel")
+
+ax5 = plt.subplot(10,2,5, sharex=ax_OM) # position 5 (left)
+CS2 = imod.select.cross_section_line(conc_meta_39y, start=starts[2], end=ends[2])
+CS2.plot(ax=ax5,y="z", cmap = "turbo", levels = levels_conc)
+plt.title(f"CS3 Metamodel")
+
+ax7 = plt.subplot(10,2,7, sharex=ax_OM) # position 7 (left)
+CS2 = imod.select.cross_section_line(conc_meta_39y, start=starts[3], end=ends[3])
+CS2.plot(ax=ax7,y="z", cmap = "turbo", levels = levels_conc)
+plt.title(f"CS4 Metamodel")
+
+ax9 = plt.subplot(10,2,9, sharex=ax_OM) # position 9 (left)
+CS2 = imod.select.cross_section_line(conc_meta_39y, start=starts[4], end=ends[4])
+CS2.plot(ax=ax9,y="z", cmap = "turbo", levels = levels_conc)
+plt.title(f"CS5 Metamodel")
+path_4 = pathlib.Path(f"reports/images/CS_salinity_combined.png")
+plt.savefig(path_4, dpi=200)
+#%% plotting both model outputs separately
 # Original model
 
 plt.figure(figsize=(15,15))
@@ -130,5 +168,3 @@ for i, (start, end) in enumerate(zip(starts, ends)):
 path_3 = pathlib.Path(f"reports/images/CS_salinity_meta.png")
 plt.savefig(path_3, dpi=300)
 
-
-# %%

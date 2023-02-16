@@ -9,7 +9,7 @@ format:
         colorlinks: true
 ---
 
-[NOTE: prior to running this script, make sure the scripts 4.1, 4.2, 4.3 have been run, to ensure this script refers to the latest results of the metamodel]
+{{< pagebreak >}}
 
 # Model setup
 - starting concentrations: a column of saline groundwater at the sea, the rest is fresh
@@ -33,66 +33,53 @@ Given that the model’s domain is larger than the study area, the metamodel’s
 ### Last changes
 The last run was made with different conductivities for the infiltration ponds. The infiltration ponds["cond"] was regridded, resulting  in the loss of small flows on 25m scale (horizontal/radial flows) after regriddind. To avoid this, the model budgets/flows as calculated by the 25m model have been regridded to 250m, followed by assigning a conductance to the infiltration pond cells that would result in this budget change.. 
 
+{{< pagebreak >}}
 
 ## 1. Hydraulic heads
 ### Cross sections of distribution
-![Original model cross sections](images/CS_heads_OM.png)
-![Metamodel cross sections](images/CS_heads_meta.png)
-
-### Errors 
-- Entire domain:   0.029m 
-- Study area:     -0.056m 
+![Cross sections of metamodel and original model. Errors: (entire domain: 0.029m),(study area: -0.056m)  ](images/CS_heads_combined.png)
 
 ## Observations
 - The model has a lower accuracy in the study area than in the entire domain. It's average error in the study area is about -5.6cm.
 
 - Looking at the cross sections, the main features of the hydraulic head gradient in the OM seem to be represented by the metamodel's output
-
+{{< pagebreak >}}
 ## 2. Budgets
 ### Plots
-![Budget errors](images/budget_errors.png)
-
-### Errors 
-- budget river error =  1.80m^3 (entire domain - need for study domain?)
-- budget drain error = -2.56m^3 (entire domain - need for study domain?)
-- budget wel error   = -1.58e-10 m^3
+![Budget errors: (river:1.80m^3 entire domain), (drain: -2.56m^3 entire domain), (budget well error = -1.58e-10m^3 entire domain)](images/budget_errors.png)
 
 ### Observations
 - The budget errors are half the size of those from the previous results. 
 - Plots: The shape of the coastline can still be seen in the plots for drn and riv errors
-
+{{< pagebreak >}}
 ## 3. Groundwater salinity
 
-### Cross sections [Cl]
-![Metamodel cross sections](images/CS_salinity_meta.png)
-![Original model cross sections](images/CS_salinity_OM.png)
-
+### Cross sections [Cl-]
+![Metamodel cross sections. Errors: (-0.08  [g/l] entire domain), (-0.48  [g/l]) study area)](images/CS_salinity_combined.png)
+{{< pagebreak >}}
 ### Depth of fresh-saline interface
-![Depth of fresh-saline interface](images/depth_freshwater.png)
-
-### Errors
-Deph of fresh saline interface:
-
-- Entire domain:  1.73 m 
-- Study area:    -7.09 m
-
-Groundwater salinity [Cl]:
-
-- Entire domain:  -0.08  [g/l]
-- Study area:     -0.48  [g/l]
+![Depth of fresh-saline interface. Errors: (1.73m entire domain), (-7.09m study area)](images/depth_freshwater.png)
+{{< pagebreak >}}
+### Cross section along coastline
+In his geochemical analysis, (Stuyfzand, 1993) provided a series of cross sections through the dune area of the Netherlands. In figure 5, a part of this cross section can be seen. With the use of species, the effect of geochemical tracers can be simulated in iMOD-WQ using species. See figure 6 for the calculated groundwater species, or tracer distribution.
+![Cross section along coastline (Stuyfzand, 1993). Green corresponds to the artificial infiltration in the Hague dune area, blue:freshwater infiltrated through dunes, yellow:brackish grounwater, orange:saline groundwater](images/stuyfzand_snipped.png)
+![Cross section along coastline, by model, with use of species for different groundwater origins](images/CS_long_species.png)
 
 ### Observations
 - Cross sections: The main features are represented by the output of the metamodel. The intrusion of salt water is represented in the metamodel, the shape of the freshwater is also reproduced by the metamodel.
 - Depth interface plots: near the coastline in the study area, it can be seen that the depth of the fresh-saline interface is deeper in the metamodel than in the OM
 - Errors: in an absolute sense, the error inside the study area has been lowered. This has gone at the cost of accuracy outside of the study area
+- Species/tracers: The depth of artificial infiltration of the metamodel reaches a depth of -80m after a simulation time of 39 years. In Stuyfzand's analysis, the artificial recharge reaches a depth of 90m.
 
-
-# Interpretation
+# Discussion
 - Previous results showed a higer head inside the study domain. This was linked to the depth of the fresh-saline interface, which was deeper, presumed as a result of excess infiltration.
 - Currently, the heads calculated by the metamodel inside the study area are about 6cm lower than the OM and the error of depth of the fresh-saline interface changed from (1.38m entire domain, -8.95m SA) to (1.73m entire domain, -7.09m SA). There may be other factors affecting the excess saline intrusion to investigate.
-
 - The budget errors seem to be half that of the previous results. There is now less infiltration in the study area (river budgets) than before
-
 - Overall, the increased accuracy in the study area seems to have gone at the cost of accuracy elsewhere in the model domain. 
 
-- 
+Further steps to take:
+- The species plot gives insight in the velocity of artificial infiltration. To further investigate the timescale for the infiltration to reach a steady state, plots will be made on which the depth of the fresh-saline interface is plotted vs time. This may hint at the actual timescale of a freshwater reservoir to form/recharge. These plots will also give insight in the accuracy of the metamodel with the original model, a crucial step to test the state of the art knowledge. 
+- Create an indicative reconstruction of saltwater upconing in the 1950s by setting the starting groundwater salinity in the dune area to fully saline and investigate the obtained distribution after a 40y simulation (1950 up to 1990).
+- Sensitivity analysis of the metamodel to conductivity in the dune area. This may give a range of acceptable intercell conductances and provide insight in the original model's sensityvity to conductances.
+- Change type of numerical solver from VDF (Variable Density Flow) to MoC (Method of Characteristics), describe the results
+
