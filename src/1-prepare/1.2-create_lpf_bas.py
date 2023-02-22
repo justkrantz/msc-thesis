@@ -32,7 +32,7 @@ starting_head = xr.open_zarr(r"data\1-external\data-25-run-1\head_ss_t0.zarr")
 starting_head_ar = starting_head["head"].astype(np.float64)
 #starting_head_2 = starting_head_ar.to_netcdf()
 starting_head_3 = starting_head_ar.swap_dims({"layer":"z"}).drop("time")
-starting_head_nc = xr.open_dataarray("data/1-external/starting-head.nc")
+starting_head_nc = xr.open_dataarray("data/1-external/starting-head.nc") # For calibration purposes, the model should be run using the same starting heads, but regridded. 
 conductivity  = xr.open_dataset("data/1-external/conductivity.nc")
 like = xr.open_dataarray("data/2-interim/like.nc")
 
@@ -91,8 +91,8 @@ kv_coarse = (kv_coarse
 
 #%%
 # Starting head
-
-SH_re = mean_regridder.regrid(starting_head_3, like)
+SH_re = mean_regridder.regrid(starting_head_nc, like)
+SH_re_2 = mean_regridder.regrid(starting_head_3, like)
 SH_re = SH_re.where(ibound_coarse)
 #SH_re_2 = link_z_layer(SH_re,ibound_coarse)
 SH_re.to_netcdf(r"data/2-interim/starting-head-coarse.nc")

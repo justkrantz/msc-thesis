@@ -2,8 +2,6 @@
 """
 Analyze the heads of metamodel, compare with 25m heads:
 - absolute error
-- attempt at 
-
 """
 #%%
 import numpy as np
@@ -99,6 +97,8 @@ plt.savefig(path, dpi=300)
 plt.figure(figsize=(14,26))
 plt.subplots_adjust(hspace=0.6)
 plt.suptitle("hydraulic heads")
+ax_OM = plt.axes()
+
 for i, (start, end) in enumerate(zip(starts, ends)):
     ax_OM = plt.subplot(10,2, (i+1)*2, sharex=ax_OM)  # Set the position of the subplot 
     CS_OM = imod.select.cross_section_line(heads_SS_OM, start=start, end=end)

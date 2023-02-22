@@ -135,7 +135,7 @@ CS2.plot(ax=ax9,y="z", cmap = "turbo", levels = levels_conc)
 plt.title(f"CS5 Metamodel")
 path_4 = pathlib.Path(f"reports/images/CS_salinity_combined.png")
 plt.savefig(path_4, dpi=200)
-#%% plotting both model outputs separately
+#%% plotting both model outputs separately (DELETE?)
 # Original model
 
 plt.figure(figsize=(15,15))

@@ -10,52 +10,62 @@ format:
 ---
 
 {{< pagebreak >}}
+# Introduction
 
-# Model setup
-- starting concentrations: a column of saline groundwater at the sea, the rest is fresh
-- runtime: 39y of simulation
+## Problem statement
+The climate in Europe is changing: socio-economically, geopolitically and not least of all environmentally. Drinking water is one of the main necessity of life and its supply as a resource is crucial to the quality of life in Europe. Scenarios in which  drinking water resources are threatened can be easily thought of, as effects of pollution, increase in demand and drought. A vital resource of drinking water supply in the Rhine-Meuse Delta is the use of fresh groundwater reservoirs in the dunes. 
 
+In anticipation of future scenarios and ensure the robustness of the drinking water supply in the dunes of The Hague (Meijendel-Berkheide), Dunea (the drinking water supplier) sought out to investigate the feasibility of the extraction of brackish groundwater as an additional resource. A state-of-the-art model has been created that can simulate groundwater flow in the dune area of the Hague.       
 
-# Review of first results
-Before using the metamodel to test the state-of-the-art knowledge of the fresh/saline groundwater interface, its accuracy with the original model (OM) needs to be reviewed. The metamodel’s output’s accuracy can be expressed by examining three major outputs for which the OM is currently used:
+The use of this model is prone to some impracticalities and uncertainties. The impracticalities are related to its limited application possibilities due to its large calculation times. The current model has an average calculation time of 1 hour per year of geohydrological simulation in the domain. To run a paleohydrological reconstruction with this model for a 1000 year run (not an uncommon timescale for a geohydrological model), this would require a calculation time of 41 days using powerful computation by Amazon Web Services. Another issue with the model is that is has only been calibrated on hydrualic head data obtained from groundwater monitoring, effectively overlooking the variable density flows that occurr in fresh-saline groundwatersystems. Therefore, it's use as a state-of-the-art model for fresh-saline groundwater interactions can be questioned since it has not been tested on fresh-saline groundwater interactions through variable density flow.
 
-1. Hydraulic heads
-2. Budgets
-3. Groundwater salinity
+## Scientific relevance
+This location's geohydrology is particularly suitable for investigation because of rapidly changing conditions (on a geohydrological timescale) it has submitted to. A fresh-saline groundwater distribution naturally develops over a long timescale (>100y). In this area, upconing of saline groundwater occurred in the 1950s due to excessive exfiltration of groundwater for drinking water supply. Consequently, the recharge of fresh groundwater had to be restored and improved by means of engineering. Infiltration ponds and a pipeline to pump water from Meuse to the reservoir were installed to enhance infiltration.
 
-To review the metamodel’s output with the OM, the results of the OM (25m scale) are regridded to the (larger) cell size of 250m using a corresponding regridding technique. These regridded results can then be compared to the metamodel’s output, by:
+Moreover, geohydrological and geochemical conditions in this area have been closely monitored and rigorously studied. An elaborate geochemical study has been conducted by (Stuyfzand, 1993). Here he presents a spatial distribution of the subsufrace in the study area, in which various groundwater regions are distinguished by salinity and origin. The latter's added value is the designation of a groundwater region whose origin is artificial infiltration, in other words a valuation of the shape and size of the water which infiltration artificially in the dune area since the 1950s. (see Figure 1) 
 
-- Plotting cross sections for heads and salinity to investigate their distributions 
-- Looking at errors of output of metamodel vs original model
+![Cross section along coastline (Stuyfzand, 1993). Green corresponds to the artificial infiltration in the Hague dune area, blue:freshwater infiltrated through dunes, yellow:brackish grounwater, orange:saline groundwater](images/Stuyfzand_snipped.png)
 
-Given that the model’s domain is larger than the study area, the metamodel’s accuracy inside the study domain has the highest priority. Therefore, accuracy of the metamodel can be expressed more specifically for the study domain for all three major outputs. 
+These conditions present an opportunity to study various features of drinking water resources in the dunes and of fresh-saline groundwater distributions and drinking water resources. Besides validation of the existing groundwater model, this research can shed light on the timescale over which a freshwater resource can develop, with human intervention. This question is particularly interesting to scenarios where the recharge of the fresh groundwater reservoir is limited for an amount of time.
 
-### Last changes
-The last run was made with different conductivities for the infiltration ponds. The infiltration ponds["cond"] was regridded, resulting  in the loss of small flows on 25m scale (horizontal/radial flows) after regriddind. To avoid this, the model budgets/flows as calculated by the 25m model have been regridded to 250m, followed by assigning a conductance to the infiltration pond cells that would result in this budget change.. 
+## Objective
+The goal is to assess the current knowledge of fresh-saline groundwater distributions by improving a state-of-the-art groundwater model for the Meijendel-Berkheijde drinking water reservoir, and to explore applications and improvements of fresh-saline groundwater modelling in this study area.
+ 
 
-{{< pagebreak >}}
+# Method
+To validate the model and to simulate scenarios and reconstructions, the model's practicality must be increased. This can be done by constructing a new model (Metamodel, MM) which has a lower calculation time, while still accurate to the original model's (OM) outputs. This metamodel's output can be calibrated to the OM's output by running parralel simulations and investigating the discrepancies between the obtained hydraulic head distributions and water balances (cell budgets), which can be quantified by a mean error. The spatial distribution of this error is of importance since the main area of interest is in the dunes itself, the rest of the domain functions as boundary condition to the flow of groundwater inside the study area. 
 
+A parallel simulation of the OM and MM are compared, based on the available data from an earlier simulation by the OM. This simulation had a certain starting head and starting concentration, along with a simulation time of 39 years (and a set of secondary boundary conditions). The starting concentration can be seen in figure 2.
+
+![Starting [Cl-] of the 39y MM simulation. Red : Saline groundwater, Yellow : Fresh groundwater](images/starting_conc.png)
+
+![Starting [Cl-] of the 39y OM simulation. Red : Saline groundwater, Yellow : Fresh groundwater](images/starting_conc_fine.png)
+
+After the metamodel's output is sufficiently accurate to the OM, it can be used to run further simulations and investigate the fresh-saline behaviour. This will be done by investigating the fresh-saline interface, it's development depth over time and finally, by recreating the origin distributions as presented by (Stuyfzand, 1993). If the model shows similar groundwater distribtions, this can hint at the soundness of the current understanding of the fresh-saline groundwater interactions.
+The geochemical analysis of (Stuyfzand, 1993) will be reconstructed with the use of "species" inside the concentration dimension in the MM. Various freshwater origins can be represented, by applying a species to a specific boundary condition. Artificial Infiltration through the infiltration ponds can be distinguished from other freshwater infiltrations in this way, to represent the geochemical tracers that Stuyfzand used to trace back the origin of groundwater in the subsurface.
+
+# Results
 ## 1. Hydraulic heads
 ### Cross sections of distribution
-![Cross sections of metamodel and original model. Errors: (entire domain: 0.029m),(study area: -0.056m)  ](images/CS_heads_combined.png)
+
+![Cross sections of MM and original model. Errors: (entire domain: 0.029m),(study area: -0.056m)  ](images/CS_heads_combined.png)
 
 ## Observations
-- The model has a lower accuracy in the study area than in the entire domain. It's average error in the study area is about -5.6cm.
+- Looking at the cross sections, the main features of the hydraulic head gradient in the OM seem to be represented by the MM's output
 
-- Looking at the cross sections, the main features of the hydraulic head gradient in the OM seem to be represented by the metamodel's output
+- The model has a lower accuracy in the study area than in the entire domain. It's average error in the study area is about -5.6cm.
 {{< pagebreak >}}
+
 ## 2. Budgets
 ### Plots
-![Budget errors: (river:1.80m^3 entire domain), (drain: -2.56m^3 entire domain), (budget well error = -1.58e-10m^3 entire domain)](images/budget_errors.png)
+![Budget errors: (river:1.80m^3^ entire domain), (drain: -2.56m^3^ entire domain), (budget well error = -1.58e-10m^3^ entire domain)](images/budget_errors.png)
 
 ### Observations
-- The budget errors are half the size of those from the previous results. 
-- Plots: The shape of the coastline can still be seen in the plots for drn and riv errors
+- Plots: The shape of the coastline can be seen in the plots for drn and riv errors
 {{< pagebreak >}}
 ## 3. Groundwater salinity
-
 ### Cross sections [Cl-]
-![Metamodel cross sections. Errors: (-0.08  [g/l] entire domain), (-0.48  [g/l]) study area)](images/CS_salinity_combined.png)
+![MM cross sections. Errors: (-0.08  [g/l] entire domain), (-0.48  [g/l]) study area)](images/CS_salinity_combined.png)
 {{< pagebreak >}}
 ### Depth of fresh-saline interface
 ![Depth of fresh-saline interface. Errors: (1.73m entire domain), (-7.09m study area)](images/depth_freshwater.png)
@@ -65,21 +75,29 @@ In his geochemical analysis, (Stuyfzand, 1993) provided a series of cross sectio
 ![Cross section along coastline (Stuyfzand, 1993). Green corresponds to the artificial infiltration in the Hague dune area, blue:freshwater infiltrated through dunes, yellow:brackish grounwater, orange:saline groundwater](images/stuyfzand_snipped.png)
 ![Cross section along coastline, by model, with use of species for different groundwater origins](images/CS_long_species.png)
 
+{{< pagebreak >}}
 ### Observations
-- Cross sections: The main features are represented by the output of the metamodel. The intrusion of salt water is represented in the metamodel, the shape of the freshwater is also reproduced by the metamodel.
-- Depth interface plots: near the coastline in the study area, it can be seen that the depth of the fresh-saline interface is deeper in the metamodel than in the OM
-- Errors: in an absolute sense, the error inside the study area has been lowered. This has gone at the cost of accuracy outside of the study area
-- Species/tracers: The depth of artificial infiltration of the metamodel reaches a depth of -80m after a simulation time of 39 years. In Stuyfzand's analysis, the artificial recharge reaches a depth of 90m.
+
+| Sanity Check  | Study Area | Total Area |  Unit  |
+|---------------|:-----------|-----------:|:------:|
+| Heads         | -0.056     |    0.0289  |   m    |
+| budgets: river|            |   -2.60    |  m^3^  |
+| budgets: drain|            |    1.80    |  m^3^  |
+| Depth f/s     | -7.09      |    1.73    |   m    |
+| [Cl^-^]       | -0.08232   |   -0.48    | [g/l]  |
+
+: Overview of the errors of the MM when running a parralel simulaiton with the existing OM runs. 
+
+- Cross sections: The main features are represented by the output of the MM. The intrusion of salt water is represented in the MM, the shape of the freshwater is also reproduced by the MM.
+- Depth interface plots: near the coastline in the study area, it can be seen that the depth of the fresh-saline interface is deeper in the MM than in the OM
+- Species/tracers: The depth of artificial infiltration of the MM reaches a depth of 80m after a simulation time of 39 years. In Stuyfzand's analysis, the artificial recharge reaches a depth of 90m.
 
 # Discussion
-- Previous results showed a higer head inside the study domain. This was linked to the depth of the fresh-saline interface, which was deeper, presumed as a result of excess infiltration.
-- Currently, the heads calculated by the metamodel inside the study area are about 6cm lower than the OM and the error of depth of the fresh-saline interface changed from (1.38m entire domain, -8.95m SA) to (1.73m entire domain, -7.09m SA). There may be other factors affecting the excess saline intrusion to investigate.
-- The budget errors seem to be half that of the previous results. There is now less infiltration in the study area (river budgets) than before
-- Overall, the increased accuracy in the study area seems to have gone at the cost of accuracy elsewhere in the model domain. 
+- Currently, the heads calculated by the MM inside the study area are about 6cm lower than the OM and the error of depth of the fresh-saline interface (1.73m entire domain, -7.09m SA). This may be due to the error in hydraulic heads
 
 Further steps to take:
-- The species plot gives insight in the velocity of artificial infiltration. To further investigate the timescale for the infiltration to reach a steady state, plots will be made on which the depth of the fresh-saline interface is plotted vs time. This may hint at the actual timescale of a freshwater reservoir to form/recharge. These plots will also give insight in the accuracy of the metamodel with the original model, a crucial step to test the state of the art knowledge. 
-- Create an indicative reconstruction of saltwater upconing in the 1950s by setting the starting groundwater salinity in the dune area to fully saline and investigate the obtained distribution after a 40y simulation (1950 up to 1990).
-- Sensitivity analysis of the metamodel to conductivity in the dune area. This may give a range of acceptable intercell conductances and provide insight in the original model's sensityvity to conductances.
-- Change type of numerical solver from VDF (Variable Density Flow) to MoC (Method of Characteristics), describe the results
 
+- The species plot gives insight in the velocity of artificial infiltration. To further investigate the timescale for the infiltration to reach a steady state, plots will be made on which the depth of the fresh-saline interface is plotted vs time. This may hint at the actual timescale of a freshwater reservoir to form/recharge. These plots will also give insight in the accuracy of the MM with the OM, a crucial step to test the state of the art knowledge. 
+- Reconstruction of saltwater upconing in the 1950s by setting the starting groundwater salinity in the dune area to fully saline and investigate the obtained distribution after a 40y simulation (1950 up to 1990).
+- Sensitivity analysis of the MM to conductivity in the dune area. This may give a range of acceptable intercell conductances and provide insight in the OM's sensityvity to conductances.
+- Change type of numerical solver from VDF (Variable Density Flow) to MoC (Method of Characteristics), describe the results
