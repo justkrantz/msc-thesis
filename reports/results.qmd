@@ -2,11 +2,9 @@
 ---
 title: "Results documentation"
 author: "Justus Krantz"
-format: 
-    pdf:
-        toc: true
-        number-sections: true
-        colorlinks: true
+format:
+  html:
+    embed-resources: true
 ---
 
 {{< pagebreak >}}
@@ -37,9 +35,11 @@ To validate the model and to simulate scenarios and reconstructions, the model's
 
 A parallel simulation of the OM and MM are compared, based on the available data from an earlier simulation by the OM. This simulation had a certain starting head and starting concentration, along with a simulation time of 39 years (and a set of secondary boundary conditions). The starting concentration can be seen in figure 2.
 
-![Starting [Cl-] of the 39y MM simulation. Red : Saline groundwater, Yellow : Fresh groundwater](images/starting_conc.png)
-
-![Starting [Cl-] of the 39y OM simulation. Red : Saline groundwater, Yellow : Fresh groundwater](images/starting_conc_fine.png)
+::: {layout-ncol=2}
+![MM](images/starting_conc.png)
+![OM](images/starting_conc_fine.png)
+Starting [Cl^-^] of the parallel 39y simulations. Red : Saline groundwater, Yellow : Fresh groundwater
+:::
 
 After the metamodel's output is sufficiently accurate to the OM, it can be used to run further simulations and investigate the fresh-saline behaviour. This will be done by investigating the fresh-saline interface, it's development depth over time and finally, by recreating the origin distributions as presented by (Stuyfzand, 1993). If the model shows similar groundwater distribtions, this can hint at the soundness of the current understanding of the fresh-saline groundwater interactions.
 The geochemical analysis of (Stuyfzand, 1993) will be reconstructed with the use of "species" inside the concentration dimension in the MM. Various freshwater origins can be represented, by applying a species to a specific boundary condition. Artificial Infiltration through the infiltration ponds can be distinguished from other freshwater infiltrations in this way, to represent the geochemical tracers that Stuyfzand used to trace back the origin of groundwater in the subsurface.
@@ -101,3 +101,5 @@ Further steps to take:
 - Reconstruction of saltwater upconing in the 1950s by setting the starting groundwater salinity in the dune area to fully saline and investigate the obtained distribution after a 40y simulation (1950 up to 1990).
 - Sensitivity analysis of the MM to conductivity in the dune area. This may give a range of acceptable intercell conductances and provide insight in the OM's sensityvity to conductances.
 - Change type of numerical solver from VDF (Variable Density Flow) to MoC (Method of Characteristics), describe the results
+
+

@@ -63,7 +63,7 @@ OMriv_re = sum_regridder.regrid(OM_riv, like)
 OMwel_re = sum_regridder.regrid(OM_wel, like)
 
 inf_ponds_re = mean_regridder.regrid(inf_ponds["stage"], like)
-
+raster        = imod.prepare.rasterize(gdf, like) 
 
 #%% Analyze - errors
 error_drn_2053_sum  = er(OMdrn_re_sum, meta_drn_2053)
@@ -86,31 +86,15 @@ error_wel.mean("layer").plot.imshow(ax=axs[2])
 axs[2].set_title("Error wel")
 path_3 = pathlib.Path(f"reports/images/budget_errors.png")
 plt.savefig(path_3, dpi=300)
+#%% Bar charts: budgets and errors
+#%% Bar charts: budgets and errors NOT WORKING YET
+df_names_OM = ["River budgets", "Drain budgets", "Well budgets"]
+fig,axs = plt.subplots(2,1)
 
-#%% Plotting - cross sections
-levels_conc  = [0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0]
-levels_depth = -1 * np.arange(0,130)
-levels_conc_err = np.arange(0,20)/2-5
-# Cross sections
-starts = [
-    (75000.0, 459948.0), # (x,y)
-    (77423.0, 462817.0),
-    (79234.0, 464828.4),
-    (81880.4, 467911.6),
-    (83718.9, 469707.8),
-]
-ends = [
-    (87591.0, 449868.0), # (x,y)
-    (92828.2, 450002.0),
-    (93914.6, 452120.1),
-    (95223.9, 455793.2),
-    (96393.9, 460431.4),
-]
+# Study area
+df_OM_SA = [OMriv_re.where(raster==1).mean(), OMdrn_re_sum.where(raster==1).mean(), OM_wel.where(raster==1).mean()]
+axs[0] = plt.bar(df_names_OM, df_OM_SA)
 
-for i, (start, end) in enumerate(zip(starts, ends)):
-    fig, ax = plt.subplots()
-    CS = imod.select.cross_section_line(error_riv_2053, start=start, end=end)
-    ax = CS.plot(yincrease = False)
-    plt.title(f"Conc: CS {i+1}, meta perpendicular to coastline at t = 40y [d]")
+
 
 # %%
