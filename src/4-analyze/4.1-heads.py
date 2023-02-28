@@ -2,6 +2,8 @@
 """
 Analyze the heads of metamodel, compare with 25m heads:
 - absolute error
+- Cross sections of final heads should be further improved, reduced
+- Top view error as in 4.2
 """
 #%%
 import numpy as np
@@ -93,7 +95,7 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     plt.title(f"CS{i+1}, 2053 heads")
 path = pathlib.Path(f"reports/images/CS_heads_OM.png")
 plt.savefig(path, dpi=300)
-# %% Creating Cross sections next to eachother
+# %% Creating Cross sections next to eachother 
 plt.figure(figsize=(14,26))
 plt.subplots_adjust(hspace=0.6)
 plt.suptitle("hydraulic heads")
@@ -133,4 +135,12 @@ CS2.plot(ax=ax9,y="z",  levels = levels_head)
 plt.title(f"CS5 Metamodel")
 path_4 = pathlib.Path(f"reports/images/CS_heads_combined.png")
 plt.savefig(path_4, dpi=200)
-# %%
+# %% Top view errors
+fig,ax = plt.subplots()
+plot = error_meta53_OM.mean("layer").plot.imshow(ax=ax)
+ax.set_title("Hydraulic heads error of MM")
+ax.set_aspect(1.0)
+fig.colorbar(plot, ax=ax , label='Absolute error [m]')
+# fig.colorbar.Colorbar.remove()
+# The second colorbar needs to be removed still!
+#%%
