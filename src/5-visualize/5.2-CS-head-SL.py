@@ -27,14 +27,26 @@ conductivity  = xr.open_dataset("data/1-external/conductivity.nc")
 
 # Process data
 heads_2053_meta_notime = heads_2053_meta.isel(time=0, drop=True)
-# Set up Surface level
+# Set up Surface level 25m
 kh       = conductivity["kh"]
 domain2d = heads_SS_OM_zarr.isel(layer=-1, drop =True).notnull()
 ibound   = kh.notnull() & domain2d
 top     = ibound.coords["ztop"]
 top3d   = top.where(ibound != 0 )
+
 surface_level = top3d.max("z")
-sl_da = surface_level["head"]
+sl_da        = surface_level["head"]
+#%%
+# Set up Surface level 250m
+heads       = heads_2053_meta_notime
+domain2d = heads_2024_meta.isel(layer=-1, drop =True).notnull()
+ibound   = heads.notnull() & domain2d
+top     = ibound.coords["ztop"]
+top3d   = top.where(ibound != 0 )
+
+surface_level    = top3d.max("z")
+sl_da_250        = surface_level["head"]
+
 
 # %% Cross section
 # over dunes high, polders low

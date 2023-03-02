@@ -1,3 +1,5 @@
+""" Here the model is prepared. Time discretization can be adjusted to 1s to retrieve SS results
+"""
 #%%
 import imod
 import xarray as xr
@@ -45,13 +47,11 @@ m_ss["wel"] = wel
 m_ss["drn"]  = drn
 m_ss["drn2"] = drn2
 m_ss["drn3"] = drn3
-m_ss["chd"] = chd
+m_ss["chd"]  = chd
 #m_ss["riv"] = riv
 #%%
 m_ss.create_time_discretization(additional_times=[
-    "2014-12-31T23:59:59.000000000", "2020-01-01T00:00:00.000000000", "2025-01-01T00:00:00.000000000", "2030-01-01T00:00:00.000000000",
-    "2035-01-01T00:00:00.000000000", "2040-01-01T00:00:00.000000000", "2045-01-01T00:00:00.000000000", "2050-01-01T00:00:00.000000000"
-    "2054-01-01T00:00:00.000000000"]
+    "2014-12-31T23:59:59.000000000", "2015-01-01T00:00:00.000000000"]
 )
 m_ss["time_discretization"].dataset["transient"] = False
 modeldir_ss = pathlib.Path("data/3-input/SS_1")

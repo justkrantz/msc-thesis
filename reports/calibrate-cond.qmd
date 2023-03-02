@@ -1,0 +1,70 @@
+---
+title: "Calibrate conductance"
+author: "Justus Krantz"
+format:
+  html:
+    embed-resources: true
+---
+## Water Balances
+cond1 : Calculated by taking heads and budget changes (flows) from OM. dividing the two gives cell conductances.  
+
+![OM Water balance](images/Waterbalance_OM_sum.png.)
+
+![MM Water balance over study area, cond1](images/Waterbalance_MM_cond1_sum.png)
+
+![OM Water balance over study area, cond2](images/Waterbalance_MM_cond2_sum.png)
+
+![OM Water balance over study area, cond3](images/Waterbalance_MM_cond3_sum.png)
+
+![OM Water balance over study area, cond4](images/Waterbalance_MM_cond4_sum.png)
+
+![OM Water balance over study area, cond5](images/Waterbalance_MM_cond5_sum.png)
+
+![OM Water balance over study area, cond5](images/Waterbalance_MM_cond6_sum.png)
+
+cond1 : Calculated by taking heads and budget changes (flows) from OM. dividing the two gives cell conductances.  
+## Observations
+OM:    
+
+- IP: 202230.78 m^3^/d
+
+- drn: -193343 m^3^/d
+
+MM(cond1)
+
+- IP: 28.000 m^3^/d
+- drn: -26000 m^3^/d
+
+MM(cond2)
+
+- cond2 = 0.5 * cond1
+- IP: 18.000 m^3^/d
+- drn: -17000 m^3^/d
+
+MM(cond3)
+
+- cond3 = 0.75 * cond1
+- IP:   222650.48 m^3^/d
+- drn: -219553.22 m^3^/d
+
+MM(cond4)
+
+- cond4 = 0.65 * cond1
+- IP:   206675.44 m^3^/d
+- drn: -204291.1 m^3^/d
+
+MM(cond5)
+
+- cond5 = 0.60 * cond1
+- IP:   198116.83 m^3^/d
+- drn: -196130.66 m^3^/d
+
+MM(cond5)
+
+- cond5 = 0.625 * cond1
+- IP:   202450.4  m^3^/d
+- drn: -200261.34 m^3^/d
+
+
+## Calibrated
+To calibrate on the water balance, the conductances of the infiltration ponds in the study area need to be scaled by a factor of 0.625. Now the effect on the fresh-saline interface can be investigated
