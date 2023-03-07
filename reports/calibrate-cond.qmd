@@ -5,10 +5,14 @@ format:
   html:
     embed-resources: true
 ---
-## Water Balances
-cond1 : Calculated by taking heads and budget changes (flows) from OM. dividing the two gives cell conductances.  
+## Introduction
+Before calibration on water balance in the study area, the the starting conductance is calculated by the water balance for the infiltration ponds themselves: By taking heads and budget changes (flows) from OM and dividing the two, giving cell conductances.  This conductance dataset will be used as input for the calibration. The following diagram shows the calibration procedure: 
 
-![OM Water balance](images/Waterbalance_OM_sum.png.)
+![OM Water balance](figures\calibration cond.png)
+
+## Output - Water Balances
+
+![Calibration procedure](images/Waterbalance_OM_sum.png.)
 
 ![MM Water balance over study area, cond1](images/Waterbalance_MM_cond1_sum.png)
 
@@ -23,7 +27,8 @@ cond1 : Calculated by taking heads and budget changes (flows) from OM. dividing 
 ![OM Water balance over study area, cond5](images/Waterbalance_MM_cond6_sum.png)
 
 cond1 : Calculated by taking heads and budget changes (flows) from OM. dividing the two gives cell conductances.  
-## Observations
+
+## Output - Observations
 OM:    
 
 - IP: 202230.78 m^3^/d
