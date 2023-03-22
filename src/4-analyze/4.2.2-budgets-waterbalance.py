@@ -34,20 +34,14 @@ gdf          = geopandas.read_file(r"c:\projects\msc-thesis\data\1-external\Poly
 inf_ponds    = xr.open_dataset(r"c:\projects\msc-thesis\data\1-external\infiltration_ponds.nc")
 inf_ponds = inf_ponds.isel(time=0, drop=True)
 # Output: budgets from metamodel 
-meta_drn_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgdrn\bdgdrn_205312312359_l*.idf").isel(time=0, drop=True)
-meta_drn_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgdrn\bdgdrn_202412312359_l*.idf").isel(time=0, drop=True)
-meta_drn_SS       = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgdrn\bdgdrn_201412312359_l*.idf").isel(time=0, drop=True)
+meta_drn_SS       = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\2-scenario_dichte_rand\bdgdrn\bdgdrn_201412312359_l*.idf").isel(time=0, drop=True)
 
-meta_ghb_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgghb\bdgghb_205312312359_l*.idf").isel(time=0, drop=True)
-meta_ghb_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgghb\bdgghb_202412312359_l*.idf").isel(time=0, drop=True)
-meta_ghb_SS       = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgghb\bdgghb_201412312359_l*.idf").isel(time=0, drop=True)
+meta_ghb_SS       = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\2-scenario_dichte_rand\bdgghb\bdgghb_201412312359_l*.idf").isel(time=0, drop=True)
 
 meta_rch_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgrch\bdgrch_205312312359_l*.idf").isel(time=0, drop=True)
-meta_rch_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgrch\bdgrch_202412312359_l*.idf").isel(time=0, drop=True)
 # meta_drn_SS Unneccesary since rch will be the same
 
 meta_wel_2053     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgwel\bdgwel_205312312359_l*.idf").isel(time=0, drop=True)
-meta_wel_2024     = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgwel\bdgwel_202412312359_l*.idf").isel(time=0, drop=True)
 # meta_wel_SS Unneccessary since wel will be the same
 
 OM_drn = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\bdgdrn_ss_t0.zarr")["bdgdrn"]
@@ -93,10 +87,10 @@ WB_OM = ["riv", "drn", "well"]
 axs = plt.bar(WB_OM, [riv_OM_SA.sum().compute(),   # Infiltration ponds
                       drn_OM_SA.sum().compute(),   # surface runoff (+pipe drainage?)
                       wel_OM_SA.sum().compute()])  # Wells
-plt.title("SS Water Balance for OM")
+plt.title("SS Water Balance for OM - Study Area")
 plt.ylabel("$m^{3}$/d")
 plt.grid()
-path_3 = pathlib.Path(f"reports/images/Waterbalance_OM_sum.png")
+path_3 = pathlib.Path(f"reports/images/2-scenario_dichte_rand/Waterbalance_OM_sum.png")
 plt.savefig(path_3, dpi=300)
 #%% Bar Charts MM
 fig,axs = plt.subplots()
@@ -105,9 +99,9 @@ axs = plt.bar(WB_OM, [ghb_MM_SA.sum().compute(),   # infiltration ponds
                       rch_MM_SA.sum().compute(),   # precipitation
                       drn_MM_SA.sum().compute(),   # surface runoff (+ pipe drainage?)
                       wel_MM_SA.sum().compute()])  # Wells
-plt.title("SS Water Balance for MM - cond6")
+plt.title("SS Water Balance for MM - Study Area - cond6")
 plt.ylabel("$m^{3}$/d")
 plt.grid()
-path_3 = pathlib.Path(f"reports/images/Waterbalance_MM_cond6_sum.png") # According to calibration 1.4.2
+path_3 = pathlib.Path(f"reports/images/2-scenario_dichte_rand/Waterbalance_MM_cond6_sum.png") # According to calibration 1.4.2
 plt.savefig(path_3, dpi=300)
 # %%

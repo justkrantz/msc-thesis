@@ -18,16 +18,17 @@ import geopandas
 #%%
 os.chdir("c:/projects/msc-thesis")
 #%% Import data
-heads_2024_meta   = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\head\head_202412312359_l*.idf")
-heads_2053_meta   = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\head\head_205312312359_l*.idf")
+heads_2055_meta   = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\2-scenario_dichte_rand\head\head_205412312359_l*.idf")
+heads_SS_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\2-scenario_dichte_rand\head\head_201412312359_l*.idf")
+
 like = xr.open_dataarray(r"c:/projects/msc-thesis/data/2-interim/like.nc")
 gdf  = geopandas.read_file(r"c:\projects\msc-thesis\data\1-external\Polygon.shp")
 heads_SS_OM_zarr = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\head_ss_t0.zarr")
 
 # Process data
 heads_SS_OM = heads_SS_OM_zarr["head"].drop("time").astype(np.float64)
-heads_2024_meta_notime = heads_2024_meta.isel(time=0, drop=True)
-heads_2053_meta_notime = heads_2053_meta.isel(time=0, drop=True)
+heads_2053_meta_notime = heads_2055_meta.isel(time=0, drop=True)
+heads_SS_meta_notime = heads_SS_meta.mean("time")
 
 # Import regridder & regrid original data
 mean_regridder = imod.prepare.Regridder(method="mean")
@@ -38,15 +39,13 @@ def er(expected, actual):
     re = actual - expected
     return re
 
-error_meta24_OM = er(heads_SS_OM_re, heads_2024_meta_notime)
 error_meta53_OM = er(heads_SS_OM_re, heads_2053_meta_notime)
 
 heads_error_global_mean = error_meta53_OM.mean().compute()
 
 #%% Clip data to area of Interest 
 raster             = imod.prepare.rasterize(gdf, like) 
-heads_2024_meta_clipped = heads_2024_meta.isel(time=0, drop=True).where(raster==1)
-heads_2053_meta_clipped = heads_2053_meta.isel(time=0, drop=True).where(raster==1)
+heads_2053_meta_clipped = heads_2055_meta.isel(time=0, drop=True).where(raster==1)
 heads_SS_OM_clipped = heads_SS_OM_re.where(raster==1)
 
 # error in study area (SA):
@@ -78,10 +77,10 @@ plt.subplots_adjust(hspace=0.5)
 plt.suptitle("hydraulic heads cross sections of metmamodel, perpendicular to coastline")
 for i, (start, end) in enumerate(zip(starts, ends)):
     ax = plt.subplot(5,2, i+1)
-    CS = imod.select.cross_section_line(heads_2053_meta, start=start, end=end)
+    CS = imod.select.cross_section_line(heads_SS_meta_notime, start=start, end=end)
     CS.plot(ax=ax, levels=levels_head, yincrease = False)
     plt.title(f"CS{i+1}, 2053 heads")
-path = pathlib.Path(f"reports/images/CS_heads_meta.png")
+path = pathlib.Path(f"reports/images/2-scenario_dichte_rand/CS_heads_meta.png")
 plt.savefig(path, dpi=300)
 
 # original model heads cross sections
@@ -93,7 +92,7 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     CS = imod.select.cross_section_line(heads_SS_OM, start=start, end=end)
     CS.plot(ax=ax, levels=levels_head, yincrease = False)
     plt.title(f"CS{i+1}, 2053 heads")
-path = pathlib.Path(f"reports/images/CS_heads_OM.png")
+path = pathlib.Path(f"reports/images/2-scenario_dichte_rand/CS_heads_OM.png")
 plt.savefig(path, dpi=300)
 # %% Creating Cross sections next to eachother 
 plt.figure(figsize=(14,26))
@@ -110,30 +109,30 @@ for i, (start, end) in enumerate(zip(starts, ends)):
 
 # one column set using indexing, rest manual:
 ax1 = plt.subplot(10,2,1, sharex=ax_OM) # position 1 (top left)
-CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[0], end=ends[0])
+CS2 = imod.select.cross_section_line(heads_SS_meta_notime, start=starts[0], end=ends[0])
 CS2.plot(ax=ax1,y="z",  levels = levels_head)
 plt.title(f"CS1 Metamodel")
 
 ax3 = plt.subplot(10,2,3, sharex=ax_OM) # position 3 (left)
-CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[1], end=ends[1])
+CS2 = imod.select.cross_section_line(heads_SS_meta_notime, start=starts[1], end=ends[1])
 CS2.plot(ax=ax3,y="z",  levels = levels_head)
 plt.title(f"CS2 Metamodel")
 
 ax5 = plt.subplot(10,2,5, sharex=ax_OM) # position 5 (left)
-CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[2], end=ends[2])
+CS2 = imod.select.cross_section_line(heads_SS_meta_notime, start=starts[2], end=ends[2])
 CS2.plot(ax=ax5,y="z",  levels = levels_head)
 plt.title(f"CS3 Metamodel")
 
 ax7 = plt.subplot(10,2,7, sharex=ax_OM) # position 7 (left)
-CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[3], end=ends[3])
+CS2 = imod.select.cross_section_line(heads_SS_meta_notime, start=starts[3], end=ends[3])
 CS2.plot(ax=ax7,y="z",  levels = levels_head)
 plt.title(f"CS4 Metamodel")
 
 ax9 = plt.subplot(10,2,9, sharex=ax_OM) # position 9 (left)
-CS2 = imod.select.cross_section_line(heads_2053_meta, start=starts[4], end=ends[4])
+CS2 = imod.select.cross_section_line(heads_SS_meta_notime, start=starts[4], end=ends[4])
 CS2.plot(ax=ax9,y="z",  levels = levels_head)
 plt.title(f"CS5 Metamodel")
-path_4 = pathlib.Path(f"reports/images/CS_heads_combined.png")
+path_4 = pathlib.Path(f"reports/images/2-scenario_dichte_rand/CS_heads_combined.png")
 plt.savefig(path_4, dpi=200)
 # %% Top view errors
 fig,ax = plt.subplots()
@@ -141,6 +140,6 @@ plot = error_meta53_OM.mean("layer").plot.imshow(ax=ax)
 ax.set_title("Hydraulic heads error of MM")
 ax.set_aspect(1.0)
 fig.colorbar(plot, ax=ax , label='Absolute error [m]')
-# fig.colorbar.Colorbar.remove()
+#plt.colorbar.remove()
 # The second colorbar needs to be removed still!
 #%%

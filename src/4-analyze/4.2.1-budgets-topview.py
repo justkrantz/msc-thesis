@@ -84,7 +84,7 @@ error_riv_2053.mean("layer").plot.imshow(ax=axs[1])
 axs[1].set_title("Error riv")
 error_wel.mean("layer").plot.imshow(ax=axs[2])
 axs[2].set_title("Error wel")
-path_3 = pathlib.Path(f"reports/images/budget_errors.png")
+path_3 = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/budget_errors.png")
 plt.savefig(path_3, dpi=300)
 #%% Bar charts: budgets and errors
 #%% Bar charts: budgets and errors NOT WORKING YET

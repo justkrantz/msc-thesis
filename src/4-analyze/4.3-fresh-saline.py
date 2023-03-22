@@ -73,7 +73,7 @@ depth_fresh_OM_H.plot.imshow(ax=ax2, cmap="turbo", levels=levels_depth)
 ax2.set_title("Original model")
 error_depth.plot.imshow(ax=ax3)
 ax3.set_title("Error of the metamodel")
-path = pathlib.Path(f"reports/images/depth_freshwater.png")
+path = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/depth_freshwater.png")
 path.parent.mkdir(exist_ok=True, parents=True)
 fig.savefig(path, dpi=300)
 
@@ -102,7 +102,7 @@ plt.figure(figsize=(14,26))
 plt.subplots_adjust(hspace=0.5)
 plt.suptitle("Groundwater salinity [Cl-]")
 for i, (start, end) in enumerate(zip(starts, ends)):
-    ax_OM = plt.subplot(10,2, (i+1)*2, sharex=ax_OM)  # Set the position of the subplot 
+    ax_OM = plt.subplot(10,2, (i+1)*2)  # Set the position of the subplot 
     CS_OM = imod.select.cross_section_line(conc_OM_39y, start=start, end=end)
     CS_OM.plot(ax=ax_OM,y="z", cmap = "turbo", levels = levels_conc)
     plt.title(f"CS{i+1} OM")
@@ -133,7 +133,7 @@ ax9 = plt.subplot(10,2,9, sharex=ax_OM) # position 9 (left)
 CS2 = imod.select.cross_section_line(conc_meta_39y, start=starts[4], end=ends[4])
 CS2.plot(ax=ax9,y="z", cmap = "turbo", levels = levels_conc)
 plt.title(f"CS5 Metamodel")
-path_4 = pathlib.Path(f"reports/images/CS_salinity_combined.png")
+path_4 = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/CS_salinity_combined.png")
 plt.savefig(path_4, dpi=200)
 #%% plotting both model outputs separately (DELETE?)
 # Original model
@@ -149,7 +149,7 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     cmap = "turbo", 
     levels = levels_conc)
     plt.title(f"CS{i+1},perpendicular to coastline, after 39y")
-path_3 = pathlib.Path(f"reports/images/CS_salinity_OM.png")
+path_3 = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/CS_salinity_OM.png")
 plt.savefig(path_3, dpi=300)
 
 # Metamodel
@@ -165,6 +165,8 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     cmap = "turbo", 
     levels = levels_conc)
     plt.title(f"CS{i+1}, perpendicular to coastline after 39y")
-path_3 = pathlib.Path(f"reports/images/CS_salinity_meta.png")
+path_3 = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/CS_salinity_meta.png")
 plt.savefig(path_3, dpi=300)
 
+
+# %%

@@ -2,11 +2,7 @@
 In this script the depth of the fresh-saline interface will be plotted over time for the study area, various scenarios
  - the idea is to come to an understanding of the artificial infiltration in the dune area,
     specifically the how much time it takes for freshwater to infiltrate  to a certain depth.
--  The scenarios include: 
-    1. Starting conc as in OM, for callibration purpose
-    2. Starting conc fully saline
-    3. Starting conc in SA as fully saline (to mimic Stuyfzand) 
-- (output plot saved per calibration step 1.4.2) 
+
 """
 #%%
 import numpy as np

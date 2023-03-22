@@ -102,8 +102,8 @@ plt.xlim(2500, 19000)
 plt.ylim(-150,11)
 plt.text(2800,12,"Loosduinen")
 plt.text(18000,12, "Katwijk")
-plt.title("Species after 40y simulation, cross section along coastline")
-path2 = pathlib.Path(f"reports/images/CS_long_species.png")
+plt.title("Species after 100y simulation, cross section along coastline")
+path2 = pathlib.Path(f"reports/images/1-scenario_FixedHead_onder/CS_long_species.png")
 plt.savefig(path2, dpi=200)
 
 # %%

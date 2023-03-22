@@ -54,7 +54,7 @@ def as_si(x, ndp):
     return r'{m:s}\times 10^{{{e:d}}}'.format(m=m, e=int(e))
 plt.text(1, 35000,    r"$\mu = {0:s},$".format(as_si(mean , 2)))
 plt.text(1, 31000, r"$\sigma = {0:s} $".format(as_si(stdev, 2)))
-path = pathlib.Path(f"reports/images/error_statistics/SS_head_global.png")
+path = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/SS_head_global.png")
 plt.savefig(path, dpi=300)
 #%% Statistics study area
 mean  = error_SS_study_area.mean().compute().values
@@ -76,7 +76,7 @@ def as_si(x, ndp):
     return r'{m:s}\times 10^{{{e:d}}}'.format(m=m, e=int(e))
 plt.text(1, 2000,    r"$\mu = {0:s},$".format(as_si(mean , 2)))
 plt.text(1, 1800, r"$\sigma = {0:s} $".format(as_si(stdev, 2)))
-path = pathlib.Path(f"reports/images/error_statistics/SS_head_SA.png")
+path = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/SS_head_SA.png")
 plt.savefig(path, dpi=300)
 
 # %%

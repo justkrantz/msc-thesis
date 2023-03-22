@@ -17,7 +17,7 @@ import matplotlib.patches as mpatches
 #%%
 os.chdir("c:/projects/msc-thesis")
 #%% Import Data
-flf_MM_SS = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\bdgflf\bdgflf_201412312359_l*.idf")
+flf_MM_SS = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\2-scenario_dichte_rand\bdgflf\bdgflf_201412312359_l*.idf")
 flf_OM_SS = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\SS_run2_25m\dunea_transient_budget\bdgflf.zarr")
 # Study area
 gdf    = geopandas.read_file(r"c:\projects\msc-thesis\data\1-external\Polygon.shp")
@@ -38,11 +38,6 @@ def er(expected, actual):
     return re
 error_SS_global     = er(flf_OM_re, flf_MM_SS_notime)
 error_SS_study_area = error_SS_global.where(raster==1)
-#%% Plots per depth: to use in the command centre on the right!
-flf_err_layer10  = error_SS_study_area.mean("time").mean("variable").isel(layer=9 ).plot.imshow()   # z = -  9.0 m
-flf_err_layer22  = error_SS_study_area.mean("time").mean("variable").isel(layer=21).plot.imshow()   # z = - 50.0 m
-flf_err_layer27  = error_SS_study_area.mean("time").mean("variable").isel(layer=26).plot.imshow()   # z = - 77.5 m
-flf_err_layer32  = error_SS_study_area.mean("time").mean("variable").isel(layer=31).plot.imshow()   # z = - 102.5m
 #%% 
 """Histograms"""
 # Statistics: global
@@ -65,7 +60,7 @@ def as_si(x, ndp):
     return r'{m:s}\times 10^{{{e:d}}}'.format(m=m, e=int(e))
 plt.text(30, 2.5e05,    r"$\mu = {0:s},$".format(as_si(mean , 2)))
 plt.text(30, 2.3e05, r"$\sigma = {0:s} $".format(as_si(stdev, 2)))
-path = pathlib.Path(f"reports/images/error_statistics/SS_flf_global.png")
+path = pathlib.Path(f"reports/images/2-scenario_dichte_rand/SS_flf_global.png")
 plt.savefig(path, dpi=300)
 #%% Statistics: study area
 mean        = error_SS_study_area.mean().compute().values
@@ -87,20 +82,30 @@ def as_si(x, ndp):
     return r'{m:s}\times 10^{{{e:d}}}'.format(m=m, e=int(e))
 plt.text(30, 1.1e04,    r"$\mu = {0:s},$".format(as_si(mean , 2)))
 plt.text(30, 1.0e04, r"$\sigma = {0:s} $".format(as_si(stdev, 2)))
-path = pathlib.Path(f"reports/images/error_statistics/SS_flf_SA.png")
+path = pathlib.Path(f"reports/images/2-scenario_dichte_rand/SS_flf_SA.png")
 plt.savefig(path, dpi=300)
 
 #%% Commands for looking at specific depths, global FLF of OM, MM
+
 # OM
-flf_OM_re.mean("variable").mean("time").isel(layer=9 ).plot.imshow()     # z = -    9.0 m
-flf_OM_re.mean("variable").mean("time").isel(layer=21).plot.imshow()     # z = -   50.0 m
-flf_OM_re.mean("variable").mean("time").isel(layer=26).plot.imshow()     # z = -   77.5 m
-flf_OM_re.mean("variable").mean("time").isel(layer=31).plot.imshow()     # z = -  102.5 m
+
+flf_OM_re.mean("variable").mean("time").isel(layer=9 ).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -    9.0 m
+# %%
+flf_OM_re.mean("variable").mean("time").isel(layer=21).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -   50.0 m
+# %%
+flf_OM_re.mean("variable").mean("time").isel(layer=26).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -   77.5 m
+# %%
+flf_OM_re.mean("variable").mean("time").isel(layer=31).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -  102.5 m
+#%%
 
 # MM
-flf_MM_SS_notime.mean("time").isel(layer=9 ).plot.imshow()     # z = -    9.0 m
-flf_MM_SS_notime.mean("time").isel(layer=21).plot.imshow()     # z = -   50.0 m
+
+flf_MM_SS_notime.mean("time").isel(layer=9 ).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -    9.0 m
+# %%
+flf_MM_SS_notime.mean("time").isel(layer=21).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -   50.0 m
+# %%
 flf_MM_SS_notime.mean("time").isel(layer=26).plot.imshow()     # z = -   77.5 m
+# %%
 flf_MM_SS_notime.mean("time").isel(layer=31).plot.imshow()     # z = -  102.5 m
 #%% Commands for looking at specific depths, SA Error
 flf_err_layer10  = error_SS_study_area.mean("time").mean("variable").isel(layer=9 ).plot.imshow()   # z = -  9.0 m

@@ -17,6 +17,10 @@ os.chdir("c:/projects/msc-thesis")
 inf_ponds     = xr.open_dataset(r"data/1-external/infiltration_ponds.nc").drop("is_pond_2D")
 ibound_coarse = xr.open_dataarray(r"data/2-interim/ibound_coarse.nc")
 shead_coarse  = xr.open_dataarray(r"data/2-interim/starting-head-coarse.nc") 
+sconc_c1  = imod.idf.open(r"c:\projects\msc-thesis\data\3-input\SS_1\btn\starting_concentration_c1*.idf")
+sconc_c2  = imod.idf.open(r"c:\projects\msc-thesis\data\3-input\SS_1\btn\starting_concentration_c2*.idf")
+sconc_c3  = imod.idf.open(r"c:\projects\msc-thesis\data\3-input\SS_1\btn\starting_concentration_c3*.idf")
+
 #%%
 # Functions
 # Find the boundary of the lowest layer
@@ -39,22 +43,23 @@ def link_z_layer(ds, ibound):
 #%%
 # Boundary 
 boundary = find_boundary(ibound_coarse)
-shead_bound = shead_coarse.isel(z=-1)
-chloride = xr.full_like(shead_bound, 16.048)
+shead_bound = shead_coarse
+#chloride = xr.full_like(shead_bound, 16.048)
+chloride_2 = sconc_c1
 species_nd = xr.concat([
-    chloride.assign_coords(species=1), #cl
-    xr.full_like(chloride, 0.0).where(chloride.notnull()).assign_coords(species=2),  # AM
-    xr.full_like(chloride, 0.0).where(chloride.notnull()).assign_coords(species=3)], # polders
+    chloride_2.assign_coords(species=1), #cl
+    xr.full_like(chloride_2, 0.0).assign_coords(species=2).where(chloride_2.notnull()),  # AM
+    xr.full_like(chloride_2, 0.0).assign_coords(species=3).where(chloride_2.notnull())], # polders
     dim="species")
 
 ds_bound = xr.Dataset()
 ds_bound["stage"]   = shead_bound
 ds_bound["conc"]    = species_nd
 ds_bound["cond"]    = xr.full_like(shead_bound, 5000.0)     # High value
-ds_bound = ds_bound.expand_dims("z").where(boundary)        # may be needed to add again if error!
+ds_bound = ds_bound.where(boundary)                         # may be needed to add again if error!
 
 ds_linked = link_z_layer(ds_bound, ibound_coarse)
-
+#%%
 chd_out = imod.wq.ConstantHead(
     ds_linked["stage"], 
     ds_linked["stage"],
