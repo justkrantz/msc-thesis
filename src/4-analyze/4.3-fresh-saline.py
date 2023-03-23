@@ -26,7 +26,7 @@ gdf    = geopandas.read_file(r"c:\projects\msc-thesis\data\1-external\Polygon.sh
 surface_level = xr.open_dataarray("data/2-interim/surface_level_without_sea.nc")
 # output data 
 conc_OM    = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\conc-selection.zarr")["conc"].astype(np.float64)
-conc_meta  = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\conc\conc_c1*.IDF").isel(species=0,drop=True)
+conc_meta  = imod.idf.open(r"C:\projects\msc-thesis\data\4-output\3-scenario_FixedHead_rand\conc\conc_c1*.IDF").isel(species=0,drop=True)
 conc_meta = conc_meta.where(conc_meta != 1e30)
 conc_meta = conc_meta.where(~(conc_meta < 0.0), other=0.0)
 #%% Process data
@@ -73,7 +73,7 @@ depth_fresh_OM_H.plot.imshow(ax=ax2, cmap="turbo", levels=levels_depth)
 ax2.set_title("Original model")
 error_depth.plot.imshow(ax=ax3)
 ax3.set_title("Error of the metamodel")
-path = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/depth_freshwater.png")
+path = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/depth_freshwater.png")
 path.parent.mkdir(exist_ok=True, parents=True)
 fig.savefig(path, dpi=300)
 
@@ -133,7 +133,7 @@ ax9 = plt.subplot(10,2,9, sharex=ax_OM) # position 9 (left)
 CS2 = imod.select.cross_section_line(conc_meta_39y, start=starts[4], end=ends[4])
 CS2.plot(ax=ax9,y="z", cmap = "turbo", levels = levels_conc)
 plt.title(f"CS5 Metamodel")
-path_4 = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/CS_salinity_combined.png")
+path_4 = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/CS_salinity_combined.png")
 plt.savefig(path_4, dpi=200)
 #%% plotting both model outputs separately (DELETE?)
 # Original model
@@ -149,7 +149,7 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     cmap = "turbo", 
     levels = levels_conc)
     plt.title(f"CS{i+1},perpendicular to coastline, after 39y")
-path_3 = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/CS_salinity_OM.png")
+path_3 = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/CS_salinity_OM.png")
 plt.savefig(path_3, dpi=300)
 
 # Metamodel
@@ -165,7 +165,7 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     cmap = "turbo", 
     levels = levels_conc)
     plt.title(f"CS{i+1}, perpendicular to coastline after 39y")
-path_3 = pathlib.Path(f"reports/images/scenario_FixedHead_Onder/CS_salinity_meta.png")
+path_3 = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/CS_salinity_meta.png")
 plt.savefig(path_3, dpi=300)
 
 

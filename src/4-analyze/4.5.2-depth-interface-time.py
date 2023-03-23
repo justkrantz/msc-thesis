@@ -17,7 +17,7 @@ import matplotlib.patches as mpatches
 #%%
 os.chdir("c:/projects/msc-thesis")
 # %% Import Data
-conc_MM  = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\2-scenario_dichte_rand\conc\conc_c1*.IDF").isel(species=0,drop=True)
+conc_MM  = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\3-scenario_FixedHead_rand\conc\conc_c1*.IDF").isel(species=0,drop=True)
 gdf    = geopandas.read_file(r"c:\projects\msc-thesis\data\1-external\Polygon.shp")
 like   = xr.open_dataarray(r"c:/projects/msc-thesis/data/2-interim/like.nc")
 #%% Process data
@@ -44,11 +44,11 @@ depth_MM_da = depth_MM_ds.to_array()
 # %% PLOTTING
 fig,ax = plt.subplots(sharex=True)
 plt.plot(times, depth_MM_da, color="orange")
-plt.title("Depth of fresh-saline interface Scenario 2")
+plt.title("Depth of fresh-saline interface Scenario 3")
 plt.ylabel("depth [m]")
 plt.ylim((-80,-50))
 plt.xlabel("Time")
-path = pathlib.Path(f"reports/images/2-scenario_dichte_rand/depth-interface_MM_40y.png")
+path = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/depth-interface_MM_40y.png")
 plt.savefig(path, dpi=200)
 
 # %%

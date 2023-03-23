@@ -18,8 +18,8 @@ import geopandas
 #%%
 os.chdir("c:/projects/msc-thesis")
 #%% Import data
-heads_2055_meta   = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\2-scenario_dichte_rand\head\head_205412312359_l*.idf")
-heads_SS_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\2-scenario_dichte_rand\head\head_201412312359_l*.idf")
+heads_2055_meta   = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\3-scenario_FixedHead_rand\head\head_205412312359_l*.idf")
+heads_SS_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\3-scenario_FixedHead_rand\head\head_201412312359_l*.idf")
 
 like = xr.open_dataarray(r"c:/projects/msc-thesis/data/2-interim/like.nc")
 gdf  = geopandas.read_file(r"c:\projects\msc-thesis\data\1-external\Polygon.shp")
@@ -80,7 +80,7 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     CS = imod.select.cross_section_line(heads_SS_meta_notime, start=start, end=end)
     CS.plot(ax=ax, levels=levels_head, yincrease = False)
     plt.title(f"CS{i+1}, 2053 heads")
-path = pathlib.Path(f"reports/images/2-scenario_dichte_rand/CS_heads_meta.png")
+path = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/CS_heads_meta.png")
 plt.savefig(path, dpi=300)
 
 # original model heads cross sections
@@ -92,7 +92,7 @@ for i, (start, end) in enumerate(zip(starts, ends)):
     CS = imod.select.cross_section_line(heads_SS_OM, start=start, end=end)
     CS.plot(ax=ax, levels=levels_head, yincrease = False)
     plt.title(f"CS{i+1}, 2053 heads")
-path = pathlib.Path(f"reports/images/2-scenario_dichte_rand/CS_heads_OM.png")
+path = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/CS_heads_OM.png")
 plt.savefig(path, dpi=300)
 # %% Creating Cross sections next to eachother 
 plt.figure(figsize=(14,26))
@@ -132,7 +132,7 @@ ax9 = plt.subplot(10,2,9, sharex=ax_OM) # position 9 (left)
 CS2 = imod.select.cross_section_line(heads_SS_meta_notime, start=starts[4], end=ends[4])
 CS2.plot(ax=ax9,y="z",  levels = levels_head)
 plt.title(f"CS5 Metamodel")
-path_4 = pathlib.Path(f"reports/images/2-scenario_dichte_rand/CS_heads_combined.png")
+path_4 = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/CS_heads_combined.png")
 plt.savefig(path_4, dpi=200)
 # %% Top view errors
 fig,ax = plt.subplots()
