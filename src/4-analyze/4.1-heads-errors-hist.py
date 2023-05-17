@@ -2,6 +2,7 @@
 """
 Analyze the SS heads of metamodel, compare with 25m heads:
 - Histogram
+- TOP VIEW OF ERROR HEADS
 """
 #%%
 import numpy as np
@@ -54,7 +55,7 @@ def as_si(x, ndp):
     return r'{m:s}\times 10^{{{e:d}}}'.format(m=m, e=int(e))
 plt.text(1, 35000,    r"$\mu = {0:s},$".format(as_si(mean , 2)))
 plt.text(1, 31000, r"$\sigma = {0:s} $".format(as_si(stdev, 2)))
-path = pathlib.Path(r"reports\images\3-scenario_FixedHead_rand/SS_head_global.png")
+path = pathlib.Path(r"C:\projects\msc-thesis\reports\images\2-scenario_dichte_rand/SS_head_global.png")
 plt.savefig(path, dpi=300)
 #%% Statistics study area
 mean  = error_SS_study_area.mean().compute().values
@@ -76,7 +77,38 @@ def as_si(x, ndp):
     return r'{m:s}\times 10^{{{e:d}}}'.format(m=m, e=int(e))
 plt.text(1, 2000,    r"$\mu = {0:s},$".format(as_si(mean , 2)))
 plt.text(1, 1800, r"$\sigma = {0:s} $".format(as_si(stdev, 2)))
-path = pathlib.Path(r"reports\images\3-scenario_FixedHead_rand/SS_head_SA.png")
+path = pathlib.Path(r"C:\projects\msc-thesis\reports\images\2-scenario_dichte_rand/SS_head_SA.png")
 plt.savefig(path, dpi=300)
 
-# %%
+# %% Top view plot error heads
+Katwijk_xy       = (88055, 468500)
+Scheveningen_xy  = (79240, 458415)
+Voorschoten_xy   = (90521, 459909)  
+# up to 32m depth
+fig, (ax1, ax2) = plt.subplots(2,1, sharex=True, sharey=True, figsize = (10,12))
+error_SS_global.mean("layer").plot.imshow(ax=ax1, vmin=-1.5, vmax=1.5, cmap ="RdBu")
+ax1.set_title("mean hydraulic heads error over z ")
+ax1.annotate('Katwijk', xy=Katwijk_xy, xytext=(80000, 467500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax1.annotate('Scheveningen', xy=Scheveningen_xy, xytext=(76000, 465000),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax1.annotate('Voorschoten', xy=Voorschoten_xy, xytext=(91000, 450500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+error_SS_global.isel(layer=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]).mean("layer").plot.imshow(ax=ax2, vmin=-1.5, vmax=1.5, cmap="RdBu")
+ax2.set_title("mean hydraulic heads error to z = -32.5m")
+ax2.annotate('Katwijk', xy=Katwijk_xy, xytext=(80000, 467500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax2.annotate('Scheveningen', xy=Scheveningen_xy, xytext=(76000, 465000),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax2.annotate('Voorschoten', xy=Voorschoten_xy, xytext=(91000, 450500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+path = pathlib.Path(r"C:\projects\msc-thesis\reports\images\2-scenario_dichte_rand/SS_errors_topview.png")
+plt.savefig(path, dpi=300)
+#%% full depth
+

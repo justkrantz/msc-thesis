@@ -45,8 +45,8 @@ def er(expected, actual):
     return er
 #%% Depth of fresh-brackish interface   
 # Bounds for groundwater types
-fresh_upper = 0.150   # g/l
-brack_upper = 8.0000  # g/l
+fresh_upper = 0.300   # g/l
+brack_upper = 10.0000  # g/l
 
 # Depth fresh-saline interface OM
 depth_fresh_OM2  = conc_OM["z"].where(conc_OM_39y < fresh_upper).min("layer")
@@ -66,13 +66,47 @@ error_Cl_SA = error_Cl.where(raster==1)
 #%%
 # Plotting & saving depth of interface
 levels_depth = -1 * np.arange(0,130)
+#text = np.array((80000, 462000))
+Katwijk_xy       = (88055, 468500)
+Scheveningen_xy  = (79240, 458415)
+Voorschoten_xy   = (90521, 459909)  
 fig,(ax1, ax2, ax3) = plt.subplots(3,1, sharex=True, sharey=True, figsize=(6,12))
-depth_fresh_meta_H.plot.imshow(ax=ax1,cmap="turbo", levels=levels_depth)
-ax1.set_title("Metamodel")
-depth_fresh_OM_H.plot.imshow(ax=ax2, cmap="turbo", levels=levels_depth)
-ax2.set_title("Original model")
+depth_fresh_OM_H.plot.imshow(ax=ax1, cmap="turbo", levels=levels_depth)
+ax1.set_title("Original model")
+ax1.annotate('Katwijk', xy=Katwijk_xy, xytext=(80000, 467500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax1.annotate('Scheveningen', xy=Scheveningen_xy, xytext=(76000, 465000),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax1.annotate('Voorschoten', xy=Voorschoten_xy, xytext=(91000, 450500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+depth_fresh_meta_H.plot.imshow(ax=ax2,cmap="turbo", levels=levels_depth)
+
+ax2.set_title("Metamodel")
+ax2.annotate('Katwijk', xy=Katwijk_xy, xytext=(80000, 467500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax2.annotate('Scheveningen', xy=Scheveningen_xy, xytext=(76000, 465000),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax2.annotate('Voorschoten', xy=Voorschoten_xy, xytext=(91000, 450500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+
 error_depth.plot.imshow(ax=ax3)
 ax3.set_title("Error of the metamodel")
+ax3.annotate('Katwijk', xy=Katwijk_xy, xytext=(80000, 467500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax3.annotate('Scheveningen', xy=Scheveningen_xy, xytext=(76000, 465000),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+ax3.annotate('Voorschoten', xy=Voorschoten_xy, xytext=(91000, 450500),
+            arrowprops=dict(arrowstyle="simple", facecolor='black'),
+            )
+
 path = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/depth_freshwater.png")
 path.parent.mkdir(exist_ok=True, parents=True)
 fig.savefig(path, dpi=300)

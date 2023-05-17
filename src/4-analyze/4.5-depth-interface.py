@@ -27,14 +27,14 @@ surface_level = xr.open_dataarray("data/2-interim/surface_level_without_sea.nc")
 # output data 
 conc_OM    = xr.open_zarr(r"c:\projects\msc-thesis\data\1-external\data-25-run-1\conc-selection.zarr")["conc"].astype(np.float64)
 
-conc_meta  = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\conc\conc_c1*.IDF").isel(species=0,drop=True)
+conc_meta  = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\3-scenario_FixedHead_rand\conc\conc_c*.IDF").isel(species=0,drop=True)
 conc_meta = conc_meta.where(conc_meta != 1e30)
 conc_meta = conc_meta.where(~(conc_meta < 0.0), other=0.0)
 #%% Process data
 raster        = imod.prepare.rasterize(gdf, like) 
 # Bounds for groundwater types
-fresh_upper = 0.150   # g/l
-brack_upper = 8.0000  # g/l
+fresh_upper = 0.300   # g/l
+brack_upper = 10.0000  # g/l
     
 #%% Process data OM For study area
 # NOTE: Regridding necessary to use the raster. the raster for the study area for 25m model can be found in 4.2 budgets waterbalance
@@ -73,15 +73,16 @@ times_sim_OM = ["0", "10", "20", "30", "39"]
 times_sim_MM = ["5", "10", "15", "20", "25", "30", "35", "39"]
 # they only share the time dimension. Fix this
 fig,ax = plt.subplots(sharex=True)
-plt.plot(times_OM, depth_OM_da, color="blue")
-plt.plot(times_MM, depth_MM_da, color="orange")
-plt.title("Depth of fresh-saline interface")
+plt.plot(times_OM, depth_OM_da, color=(147/255, 187/255, 226/255))
+plt.plot(times_MM, depth_MM_da, color=(35/255 , 130/255, 183/255))
+plt.grid(axis="y")
+#plt.title("Depth of fresh-saline interface over time")
 plt.ylabel("depth [m]")
 plt.ylim((-80,-50))
-plt.xlabel("Time")
-blu_patch     = mpatches.Patch(color='blue'  ,     label='Original Model')
-orn_patch     = mpatches.Patch(color='orange',     label='Metamodel ')
-ax.legend(handles=[blu_patch, orn_patch])
+plt.xlabel("time [y]")
+blu_patch     = mpatches.Patch(color=(147/255, 187/255, 226/255)  ,     label='Original Model')
+orn_patch     = mpatches.Patch(color=(35/255 , 130/255, 183/255),     label='Metamodel ')
+ax.legend(handles=[blu_patch, orn_patch],loc="lower right")
 path = pathlib.Path(f"reports/images/depth-interface_OM_MM_cond1.png")
 plt.savefig(path, dpi=200)
 
