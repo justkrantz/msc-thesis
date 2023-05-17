@@ -85,6 +85,15 @@ plt.text(30, 1.0e04, r"$\sigma = {0:s} $".format(as_si(stdev, 2)))
 path = pathlib.Path(f"reports/images/3-scenario_FixedHead_rand/SS_flf_SA.png")
 plt.savefig(path, dpi=300)
 
+
+#%% PLOTTING ERROR VS DEPTH
+fig,ax = plt.subplots(figsize= (5,6))
+error_SS_study_area.mean("x").mean("y").plot(y="z",ax=ax)
+plt.xlabel("mean absolute error over study area [m]")
+plt.ylabel("depth [m]")
+plt.xlim(-1.25, 1.25)
+plt.title("")
+plt.grid()
 #%% Commands for looking at specific depths, global FLF of OM, MM
 
 # OM
@@ -92,7 +101,7 @@ plt.savefig(path, dpi=300)
 flf_OM_re.mean("variable").mean("time").isel(layer=9 ).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -    9.0 m
 #%%
 flf_OM_re.mean("variable").mean("time").isel(layer=15 ).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -22.5 m
-
+#%%
 flf_OM_SS_2.mean("variable").mean("time").isel(layer=15 ).plot.imshow(vmin=-10, vmax=10, cmap="RdBu_r")     # z = -22.5m NOT REGRIDDED
 
 # %%
@@ -111,7 +120,7 @@ flf_MM_SS_notime.mean("time").isel(layer=9 ).plot.imshow(vmin=-100, vmax=100, cm
 # %%
 flf_MM_SS_notime.mean("time").isel(layer=21).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -   50.0 m
 # %%
-flf_MM_SS_notime.mean("time").isel(layer=26).plot.imshow()     # z = -   77.5 m
+flf_MM_SS_notime.mean("time").isel(layer=26).plot.imshow(vmin=-100, vmax=100, cmap="RdBu_r")     # z = -   77.5 m
 # %%
 flf_MM_SS_notime.mean("time").isel(layer=31).plot.imshow()     # z = -  102.5 m
 #%% Commands for looking at specific depths, SA Error
