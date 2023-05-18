@@ -110,5 +110,13 @@ ax2.annotate('Voorschoten', xy=Voorschoten_xy, xytext=(91000, 450500),
             )
 path = pathlib.Path(r"C:\projects\msc-thesis\reports\images\2-scenario_dichte_rand/SS_errors_topview.png")
 plt.savefig(path, dpi=300)
-#%% full depth
+#%% Error over depth
+fig,ax = plt.subplots(figsize= (5,6))
+error_SS_study_area.mean("x").mean("y").plot(y="z", ax=ax)
+plt.xlabel("mean absolute error over study area [m]")
+plt.ylabel("depth [m]")
+plt.xlim(-1.25, 1.25)
+plt.title("")
+plt.grid()
 
+# %%

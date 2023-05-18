@@ -7,8 +7,8 @@
     - Brackish groundwater
     - infiltration ponds species (AM)
 
-- Transparency plots:
-    https://matplotlib.org/stable/gallery/images_contours_and_fields/image_transparency_blend.html
+NOTE:   To get the CS par to coastline, do not overwrite the cross sections for AM 
+        with perpendicular. Skip the cell with perpendicular cross section selection
 """
 
 #%%
@@ -29,9 +29,9 @@ ibound = xr.open_dataarray(r"c:/projects/msc-thesis/data/2-interim/ibound_coarse
 gdf    = geopandas.read_file(r"c:\projects\msc-thesis\data\1-external\Polygon.shp") # study Area
 surface_level = xr.open_dataarray("data/2-interim/surface_level_without_sea.nc")
 # output data 
-c1_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\3-scenario_FixedHead_rand\conc\conc_c1*.IDF").isel(time=-1, drop=True)
-c2_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\3-scenario_FixedHead_rand\conc\conc_c2*.IDF").isel(time=-1, drop=True)
-c3_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\3-scenario_FixedHead_rand\conc\conc_c3*.IDF").isel(time=-1, drop=True)
+c1_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\4-scenario-100y-fixedrand\conc\conc_c1*.IDF").isel(time=-1, drop=True)
+c2_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\4-scenario-100y-fixedrand\conc\conc_c2*.IDF").isel(time=-1, drop=True)
+c3_meta = imod.idf.open(r"c:\projects\msc-thesis\data\4-output\4-scenario-100y-fixedrand\conc\conc_c3*.IDF").isel(time=-1, drop=True)
 # Process data
 Cl     = c1_meta.where(c1_meta != 1e30).where(~(c1_meta < 0.0), other=0.0).isel(species=0, drop=True)
 AM     = c2_meta.where(c2_meta != 1e30).where(~(c2_meta < 0.0), other=0.0).isel(species=0, drop=True)
@@ -57,8 +57,8 @@ CS_par_b = CS_par_b.where(CS_par_b!=0) # setting NaN to avoid overwriting plots
 CS_par_s = imod.select.cross_section_line(c1_meta.where(c1_meta>brack_upper).where(CS_par_f.isnull()), start=start_loosduinen, end=end_katwijk).notnull()
 CS_par_s = CS_par_s.where(CS_par_s!=0) # setting NaN to avoid overwriting plots
 # AM
-CS_AM = imod.select.cross_section_line(AM_notnull.where(AM_notnull!=0),  start=start_loosduinen, end=end_katwijk)
-
+CS_AM = imod.select.cross_section_line(AM_notnull.where(AM_notnull!=0),  start=start_loosduinen, end=end_katwijk).notnull()
+#%%
 # species CS perpendicular to coastline (Figure 4.10 Stuyfzand SWE 1993)
 start_NS = (82478, 463358)
 end_SD   = (90407, 456746)
@@ -72,7 +72,7 @@ CS_perp_b = CS_perp_b.where(CS_perp_b!=0) # setting NaN to avoid overwriting plo
 CS_perp_s = imod.select.cross_section_line(c1_meta.where(c1_meta>brack_upper).where(CS_perp_f.isnull()), start=start_NS, end=end_SD).notnull()
 CS_perp_s = CS_perp_s.where(CS_perp_s!=0) # setting NaN to avoid overwriting plots
 # AM
-CS_AM = imod.select.cross_section_line(AM_notnull.where(AM_notnull!=0),  start=start_NS, end=end_SD)
+CS_AM = imod.select.cross_section_line(AM_notnull.where(AM_notnull!=0),  start=start_NS, end=end_SD).notnull()
 #%% Plotting
 # Colors 
 yellow      = (1.0    , 1.0    , 143/255)             # should be normalized values, divide rgb by 255
@@ -107,8 +107,8 @@ plt.xlim(2500, 19000)
 plt.ylim(-160,11)
 plt.text(2800,12,"Loosduinen")
 plt.text(18000,12, "Katwijk")
-plt.title("Species after 39y simulation, cross section along coastline")
-path2 = pathlib.Path(f"reports/images/4-scenario-revised-limits/CS_long_species.png")
+plt.title("Species after 100y simulation, cross section along coastline")
+path2 = pathlib.Path(f"reports/images/4-scenario-100y-fixedrand/CS_long_species.png")
 plt.savefig(path2, dpi=200)
 #%% CS PERP
 fig, ax = plt.subplots(figsize=(10,8))
@@ -136,8 +136,9 @@ ax.legend(handles=[Yello_patch, BBlu_patch, Blu_patch, DBlu_patch], loc="lower r
 plt.ylim(-160,11)
 plt.text(100,12,"North Sea")
 plt.text(7500,12, "Starrevaart & Damhouder polder")
-path2 = pathlib.Path(f"reports/images/4-scenario-revised-limits/CS_perp_species.png")
+path2 = pathlib.Path(f"reports/images/4-scenario-100y-fixedrand/CS_perp_species.png")
 plt.savefig(path2, dpi=200)
+
 # %% DUMP: TRransparency plots
 # Plotting transparency plots (only AM and polders)
 # To show both polder and AM, use combine_first, first the zero values need to be removed
